@@ -1,15 +1,20 @@
 export interface Template {
   id: string;
   title: string;
-  description: string;
+  shortDescription: string;
+  fullDescription: string;
+  promptContent: string;
   category: string;
-  content: string;
-  model?: string;
+  targetModel: string;
+  difficulty: string;
+  tone?: string;
+  outputType?: string;
   tags: string[];
+  imageUrl?: string;
+  visibility: 'public' | 'private';
   usageCount: number;
-  averageScore?: number;
-  isPublic: boolean;
-  authorId: string;
+  averageRating: number;
+  userId: string;
   authorName?: string;
   createdAt: string;
   updatedAt: string;
@@ -17,20 +22,30 @@ export interface Template {
 
 export interface CreateTemplatePayload {
   title: string;
-  description: string;
+  shortDescription: string;
+  fullDescription?: string;
+  promptContent: string;
   category: string;
-  content: string;
-  model?: string;
+  targetModel: string;
+  difficulty: string;
+  tone?: string;
+  outputType?: string;
   tags?: string[];
-  isPublic?: boolean;
+  imageUrl?: string;
+  visibility?: 'public' | 'private';
 }
 
 export interface UpdateTemplatePayload {
   title?: string;
-  description?: string;
+  shortDescription?: string;
+  fullDescription?: string;
+  promptContent?: string;
   category?: string;
-  content?: string;
-  model?: string;
+  targetModel?: string;
+  difficulty?: string;
+  tone?: string;
+  outputType?: string;
   tags?: string[];
-  isPublic?: boolean;
+  imageUrl?: string;
+  visibility?: 'public' | 'private';
 }

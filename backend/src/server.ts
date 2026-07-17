@@ -1,16 +1,14 @@
 import app from './app';
-import { env } from './config/env';
 import { connectDB } from './config/db';
+import { initializeDatabase } from './config/init-db';
+import { env } from './config/env';
 
-async function start(): Promise<void> {
+async function start() {
   await connectDB();
-
+  await initializeDatabase();
   app.listen(env.PORT, () => {
-    console.log(`PromptPilot AI backend running on port ${env.PORT}`);
+    console.log(`Server running on port ${env.PORT}`);
   });
 }
 
-start().catch((error) => {
-  console.error('Failed to start server:', error);
-  process.exit(1);
-});
+start().catch(console.error);

@@ -1,23 +1,15 @@
 export interface AnalyticsSummary {
   totalPrompts: number;
-  totalOptimized: number;
+  favoritePrompts: number;
   averageScore: number;
-  totalCollections: number;
   totalTemplates: number;
-  activeDays: number;
-  streakDays: number;
-}
-
-export interface ChartDataPoint {
-  date: string;
-  value: number;
-  label?: string;
+  mostUsedModel: string | null;
+  mostUsedCategory: string | null;
 }
 
 export interface PromptsOverTimeData {
-  daily: ChartDataPoint[];
-  weekly: ChartDataPoint[];
-  monthly: ChartDataPoint[];
+  _id: string;
+  count: number;
 }
 
 export interface CategoryUsageData {
@@ -35,13 +27,13 @@ export interface ModelUsageData {
 export interface ScoreTrendData {
   date: string;
   averageScore: number;
-  highestScore: number;
-  lowestScore: number;
   count: number;
 }
 
-export interface AnalyticsFilter {
-  period: '7d' | '30d' | '90d' | '1y' | 'all';
-  startDate?: string;
-  endDate?: string;
+export interface RecentActivityItem {
+  _id: string;
+  title: string;
+  score: number;
+  createdAt: string;
+  targetModel: string;
 }

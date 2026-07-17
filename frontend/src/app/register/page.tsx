@@ -53,7 +53,7 @@ export default function RegisterPage() {
 
     setIsLoading(true);
     try {
-      const result = await authApi.register(form.name, form.email, form.password);
+      const result = await authApi.register(form.name, form.email, form.password, form.confirmPassword);
       if (result.success) {
         toast('Account created successfully!', 'success');
         router.push('/dashboard');

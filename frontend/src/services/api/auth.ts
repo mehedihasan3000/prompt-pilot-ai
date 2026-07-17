@@ -1,10 +1,10 @@
 import { apiFetch } from '@/lib/api';
 import type { User, Session } from '@/types/user.types';
 
-export async function register(name: string, email: string, password: string) {
+export async function register(name: string, email: string, password: string, confirmPassword: string) {
   return apiFetch<Session>('/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ name, email, password }),
+    body: JSON.stringify({ name, email, password, confirmPassword }),
   });
 }
 
@@ -20,7 +20,7 @@ export async function googleLogin() {
 }
 
 export async function demoLogin() {
-  return apiFetch<Session>('/auth/demo', {
+  return apiFetch<Session>('/auth/demo-login', {
     method: 'POST',
   });
 }

@@ -8,7 +8,9 @@ const router = Router();
 
 router.post('/register', validate(registerSchema), authController.register);
 router.post('/login', validate(loginSchema), authController.login);
+router.get('/google', authController.getGoogleUrl);
 router.post('/google', authController.googleAuth);
+router.get('/callback/google', authController.googleCallback);
 router.post('/demo-login', authController.demoLogin);
 router.post('/logout', authMiddleware, authController.logout);
 router.get('/me', authMiddleware, authController.getMe);

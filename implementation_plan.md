@@ -423,20 +423,22 @@ MongoDB Collections:
 - [x] `/api/ai/optimize`, `/api/ai/generate-variants`, `/api/ai/score`, `/api/ai/recommend`, `/api/ai/chat`, `/api/ai/auto-tag`
 - [x] Prompt Workspace page (form + result display + agent progress)
 
-### Phase 3 — Data Management (Week 3)
-- [ ] Prompt CRUD API + frontend History page
-- [ ] Template CRUD API + Explore page (search/filter/sort/pagination)
-- [ ] Template Details page (public + auth-gated actions)
-- [ ] Add Template + Manage Templates pages
-- [ ] Collections CRUD + UI
+### Phase 3 — Data Management (Week 3) ✅
+- [x] Prompt CRUD API + frontend History page
+- [x] Template CRUD API + Explore page (search/filter/sort/pagination)
+- [x] Template Details page (public + auth-gated actions)
+- [x] Add Template + Manage Templates pages
+- [x] Collections CRUD + UI
+- [x] Reviews & Ratings API + UI
+- [x] DB auto-create collections + indexes on startup
 
-### Phase 4 — Advanced Features (Week 4)
-- [ ] AI Chat Assistant (SSE streaming)
-- [ ] Reviews & Ratings system
-- [ ] Analytics page (5 charts)
-- [ ] Dashboard (6 cards + 4 charts + recent activity)
-- [ ] Auto-tagging on prompt save
-- [ ] Recommendation Engine
+### Phase 4 — Advanced Features (Week 4) ✅
+- [x] AI Chat Assistant (SSE streaming, conversation history, chat UI)
+- [x] Reviews & Ratings system (template detail page)
+- [x] Analytics page (5 Recharts charts + 6 metrics)
+- [x] Dashboard (6 stat cards + 4 charts + recent activity)
+- [x] Auto-tagging on prompt save (backend service)
+- [x] Recommendation Engine (backend service + workspace display)
 
 ### Phase 5 — Polish (Week 5)
 - [ ] Profile page

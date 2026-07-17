@@ -25,7 +25,7 @@ export function useCollection(id: string) {
       if (!result.success || !result.data) {
         throw new Error(result.error || 'Failed to fetch collection');
       }
-      return result.data as Collection;
+      return result.data as { collection: Collection; prompts: any[] };
     },
     enabled: !!id,
   });

@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import * as authApi from '@/services/api/auth';
+import { setAuthToken, clearAuthToken } from '@/lib/api';
 import type { User } from '@/types/user.types';
 
 export function useCurrentUser() {
@@ -28,7 +29,9 @@ export function useLogin() {
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       authApi.login(email, password),
     onSuccess: (result) => {
-      if (result.success) {
+      if (result.success && result.data) {
+        const token = (result.data as any).token;
+        if (token) setAuthToken(token);
         queryClient.invalidateQueries({ queryKey: ['auth'] });
         router.push('/dashboard');
       }
@@ -41,10 +44,12 @@ export function useRegister() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: ({ name, email, password }: { name: string; email: string; password: string }) =>
-      authApi.register(name, email, password),
+    mutationFn: ({ name, email, password, confirmPassword }: { name: string; email: string; password: string; confirmPassword: string }) =>
+      authApi.register(name, email, password, confirmPassword),
     onSuccess: (result) => {
-      if (result.success) {
+      if (result.success && result.data) {
+        const token = (result.data as any).token;
+        if (token) setAuthToken(token);
         queryClient.invalidateQueries({ queryKey: ['auth'] });
         router.push('/dashboard');
       }
@@ -59,6 +64,7 @@ export function useLogout() {
   return useMutation({
     mutationFn: authApi.logout,
     onSuccess: () => {
+      clearAuthToken();
       queryClient.clear();
       router.push('/');
     },

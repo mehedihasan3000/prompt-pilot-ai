@@ -2,11 +2,11 @@ import { apiFetch } from '@/lib/api';
 import type { Prompt, CreatePromptPayload, UpdatePromptPayload } from '@/types/prompt.types';
 
 export function getPrompts(params?: {
-  status?: string;
   search?: string;
-  tag?: string;
-  collectionId?: string;
-  isFavorite?: boolean;
+  category?: string;
+  targetModel?: string;
+  sort?: string;
+  order?: string;
   page?: number;
   limit?: number;
 }) {
@@ -19,7 +19,7 @@ export function getPrompts(params?: {
     });
   }
   const query = searchParams.toString();
-  return apiFetch<{ prompts: Prompt[]; total: number; page: number; limit: number }>(
+  return apiFetch<{ prompts: Prompt[]; total: number; page: number; limit: number; totalPages: number }>(
     `/prompts${query ? `?${query}` : ''}`
   );
 }
@@ -48,9 +48,8 @@ export function deletePrompt(id: string) {
   });
 }
 
-export function toggleFavorite(id: string, isFavorite: boolean) {
+export function toggleFavorite(id: string) {
   return apiFetch<Prompt>(`/prompts/${id}/favorite`, {
     method: 'PATCH',
-    body: JSON.stringify({ isFavorite }),
   });
 }

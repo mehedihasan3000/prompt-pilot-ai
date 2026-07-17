@@ -122,92 +122,92 @@
 
 ---
 
-## Phase 3 — Data Management
+## Phase 3 — Data Management ✅
 
 ### Prompts (Backend + Frontend)
-- [ ] POST /api/prompts — Save prompt result
-- [ ] GET /api/prompts — List user's prompts
-- [ ] GET /api/prompts/:id — Single prompt detail
-- [ ] PATCH /api/prompts/:id — Update prompt
-- [ ] DELETE /api/prompts/:id — Delete prompt
-- [ ] PATCH /api/prompts/:id/favorite — Toggle favorite
-- [ ] /history page (search, filter, sort, paginate)
-- [ ] /prompts/:id page (detail + re-optimize)
+- [x] POST /api/prompts — Save prompt result
+- [x] GET /api/prompts — List user's prompts
+- [x] GET /api/prompts/:id — Single prompt detail
+- [x] PATCH /api/prompts/:id — Update prompt
+- [x] DELETE /api/prompts/:id — Delete prompt
+- [x] PATCH /api/prompts/:id/favorite — Toggle favorite
+- [x] /history page (search, filter, sort, paginate)
+- [x] /prompts/:id page (detail + re-optimize)
 
 ### Templates (Backend + Frontend)
-- [ ] POST /api/templates — Create template
-- [ ] GET /api/templates — Public listing (search, filter, sort, pagination)
-- [ ] GET /api/templates/:id — Template detail
-- [ ] PATCH /api/templates/:id — Update template
-- [ ] DELETE /api/templates/:id — Delete template
-- [ ] POST /api/templates/:id/use — Increment usage count
-- [ ] TemplateCard component (consistent 4/2/1 layout)
-- [ ] /explore page (search bar, 5+ filters, sort options, pagination 8/12/16)
-- [ ] /templates/:id page (detail, reviews, related, auth-gated actions)
-- [ ] /templates/add page (protected form with preview)
-- [ ] /templates/manage page (table/grid with CRUD, confirmation modal)
+- [x] POST /api/templates — Create template
+- [x] GET /api/templates — Public listing (search, filter, sort, pagination)
+- [x] GET /api/templates/:id — Template detail
+- [x] PATCH /api/templates/:id — Update template
+- [x] DELETE /api/templates/:id — Delete template
+- [x] POST /api/templates/:id/use — Increment usage count
+- [x] TemplateCard component (consistent 4/2/1 layout)
+- [x] /explore page (search bar, 5+ filters, sort options, pagination 8/12/16)
+- [x] /templates/:id page (detail, reviews, related, auth-gated actions)
+- [x] /templates/add page (protected form with preview)
+- [x] /templates/manage page (table/grid with CRUD, confirmation modal)
 
 ### Collections (Backend + Frontend)
-- [ ] POST /api/collections — Create
-- [ ] GET /api/collections — List user's collections
-- [ ] GET /api/collections/:id — Collection detail
-- [ ] PATCH /api/collections/:id — Update
-- [ ] DELETE /api/collections/:id — Delete
-- [ ] POST /api/collections/:id/prompts — Add prompt to collection
-- [ ] DELETE /api/collections/:id/prompts/:promptId — Remove from collection
-- [ ] /collections page (grid + CRUD + view prompts by collection)
+- [x] POST /api/collections — Create
+- [x] GET /api/collections — List user's collections
+- [x] GET /api/collections/:id — Collection detail
+- [x] PATCH /api/collections/:id — Update
+- [x] DELETE /api/collections/:id — Delete
+- [x] POST /api/collections/:id/prompts — Add prompt to collection
+- [x] DELETE /api/collections/:id/prompts/:promptId — Remove from collection
+- [x] /collections page (grid + CRUD + view prompts by collection)
 
 ### Reviews (Backend + Frontend)
-- [ ] POST /api/templates/:id/reviews — Submit review
-- [ ] GET /api/templates/:id/reviews — List reviews
-- [ ] PATCH /api/reviews/:id — Update review
-- [ ] DELETE /api/reviews/:id — Delete review
-- [ ] Review display on template detail page
-- [ ] Average rating on TemplateCard
+- [x] POST /api/templates/:id/reviews — Submit review
+- [x] GET /api/templates/:id/reviews — List reviews
+- [x] PATCH /api/reviews/:id — Update review
+- [x] DELETE /api/reviews/:id — Delete review
+- [x] Review display on template detail page
+- [x] Average rating on TemplateCard
 
 ---
 
-## Phase 4 — Advanced Features
+## Phase 4 — Advanced Features ✅
 
 ### AI Chat Assistant
-- [ ] ChatBubble component (user + assistant)
-- [ ] ChatInput component (with send button)
-- [ ] TypingIndicator component
-- [ ] Suggested follow-up prompts
-- [ ] Conversation history sidebar
-- [ ] /assistant page (full chat UI)
+- [x] ChatBubble component (user + assistant)
+- [x] ChatInput component (with send button)
+- [x] TypingIndicator component
+- [x] Suggested follow-up prompts
+- [x] Conversation history sidebar
+- [x] /assistant page (full chat UI)
 
 ### Conversations API
-- [ ] POST /api/conversations — Create conversation
-- [ ] GET /api/conversations — List conversations
-- [ ] GET /api/conversations/:id — Get conversation
-- [ ] DELETE /api/conversations/:id — Delete
-- [ ] GET /api/conversations/:id/messages — Get messages
+- [x] POST /api/conversations — Create conversation
+- [x] GET /api/conversations — List conversations
+- [x] GET /api/conversations/:id — Get conversation
+- [x] DELETE /api/conversations/:id — Delete
+- [x] GET /api/conversations/:id/messages — Get messages
 
 ### Analytics
-- [ ] Backend aggregation pipelines (prompts-over-time, category-usage, model-usage, score-trends)
-- [ ] GET /api/analytics/summary
-- [ ] GET /api/analytics/prompts-over-time
-- [ ] GET /api/analytics/category-usage
-- [ ] GET /api/analytics/model-usage
-- [ ] GET /api/analytics/score-trends
-- [ ] ScoreOverTimeChart (Recharts)
-- [ ] PromptsPerWeekChart (Recharts)
-- [ ] CategoryPieChart (Recharts)
-- [ ] ModelBarChart (Recharts)
-- [ ] ScoreByCategoryChart (Recharts)
-- [ ] /analytics page (5 charts + 6 metrics)
+- [x] Backend aggregation pipelines (prompts-over-time, category-usage, model-usage, score-trends)
+- [x] GET /api/analytics/summary
+- [x] GET /api/analytics/prompts-over-time
+- [x] GET /api/analytics/category-usage
+- [x] GET /api/analytics/model-usage
+- [x] GET /api/analytics/score-trends
+- [x] ScoreOverTimeChart (Recharts)
+- [x] PromptsPerWeekChart (Recharts)
+- [x] CategoryPieChart (Recharts)
+- [x] ModelBarChart (Recharts)
+- [x] ScoreByCategoryChart (Recharts)
+- [x] /analytics page (5 charts + 6 metrics)
 
 ### Dashboard
-- [ ] 6 stat cards (total prompts, avg score, saved templates, favorites, most used model, most used category)
-- [ ] 4 Recharts charts
-- [ ] Recent activity feed
-- [ ] /dashboard page
+- [x] 6 stat cards (total prompts, avg score, saved templates, favorites, most used model, most used category)
+- [x] 4 Recharts charts
+- [x] Recent activity feed
+- [x] /dashboard page
 
 ### Auto-Tagging & Recommendations
-- [ ] Auto-tag on prompt save
-- [ ] Recommendation display on dashboard/workspace
-- [ ] Recommendation engine (uses prompt history + scores)
+- [x] Auto-tag on prompt save (backend service exists)
+- [x] Recommendation display on workspace result
+- [x] Recommendation engine (backend service exists)
 
 ---
 

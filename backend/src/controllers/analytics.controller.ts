@@ -45,3 +45,12 @@ export async function getScoreTrends(req: Request, res: Response, next: NextFunc
     next(error);
   }
 }
+
+export async function getRecentActivity(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const data = await analyticsService.getRecentActivity(req.userId!);
+    res.json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+}

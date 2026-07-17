@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <!-- Background -->
+  <rect width="128" height="128" rx="28" fill="#2563EB"/>
+
+  <!-- Chat Bubble -->
+  <path
+    d="M32 42C32 35.373 37.373 30 44 30H84C90.627 30 96 35.373 96 42V68C96 74.627 90.627 80 84 80H57L42 94V80H44C37.373 80 32 74.627 32 68V42Z"
+    fill="white"
+    opacity="0.12"
+  />
+
+  <!-- Letter P -->
+  <path
+    d="M50 34H66C80 34 90 42 90 55C90 68 80 76 66 76H58V94H50V34ZM66 68C74 68 81 64 81 55C81 46 74 42 66 42H58V68H66Z"
+    fill="white"
+  />
+
+  <!-- AI Spark -->
+  <path
+    d="M98 22L100 30L108 32L100 34L98 42L96 34L88 32L96 30L98 22Z"
+    fill="white"
+  />
+</svg>

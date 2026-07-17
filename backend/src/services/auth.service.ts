@@ -1,7 +1,9 @@
 import bcrypt from 'bcryptjs';
+import { URLSearchParams } from 'url';
 import { ObjectId } from 'mongodb';
 import { getDb } from '../config/db';
 import { userCollection, User } from '../models/user.model';
+import { env } from '../config/env';
 
 export interface AuthResponse {
   user: Omit<User, 'password'>;
@@ -64,6 +66,56 @@ export async function googleAuth(googleData: { name: string; email: string; imag
   }
   const { password: _, ...userWithoutPassword } = user;
   return { user: userWithoutPassword as unknown as Omit<User, 'password'>, token: user._id.toString() };
+}
+
+export function getGoogleUrl(): string {
+  const redirectUri = `${env.BETTER_AUTH_URL}/api/auth/callback/google`;
+  const params = new URLSearchParams({
+    client_id: env.GOOGLE_CLIENT_ID,
+    redirect_uri: redirectUri,
+    response_type: 'code',
+    scope: 'openid email profile',
+    access_type: 'offline',
+    prompt: 'consent',
+  });
+  return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+}
+
+export async function handleGoogleCallback(code: string): Promise<AuthResponse> {
+  const redirectUri = `${env.BETTER_AUTH_URL}/api/auth/callback/google`;
+
+  const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      code,
+      client_id: env.GOOGLE_CLIENT_ID,
+      client_secret: env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: redirectUri,
+      grant_type: 'authorization_code',
+    }).toString(),
+  });
+
+  if (!tokenResponse.ok) {
+    const errorBody = await tokenResponse.text();
+    throw Object.assign(new Error(`Google token exchange failed: ${errorBody}`), { statusCode: 400 });
+  }
+
+  const tokens = await tokenResponse.json() as { access_token: string };
+  const accessToken = tokens.access_token;
+
+  const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!userInfoResponse.ok) {
+    throw Object.assign(new Error('Failed to fetch Google user info'), { statusCode: 400 });
+  }
+
+  const googleUser = await userInfoResponse.json() as { name: string; email: string; picture?: string };
+  const { name, email, picture } = googleUser;
+
+  return googleAuth({ name, email, image: picture });
 }
 
 export async function demoLogin(): Promise<AuthResponse> {

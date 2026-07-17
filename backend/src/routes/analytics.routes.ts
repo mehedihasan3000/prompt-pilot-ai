@@ -9,5 +9,6 @@ router.get('/prompts-over-time', authMiddleware, analyticsController.getPromptsO
 router.get('/category-usage', authMiddleware, analyticsController.getCategoryUsage);
 router.get('/model-usage', authMiddleware, analyticsController.getModelUsage);
 router.get('/score-trends', authMiddleware, analyticsController.getScoreTrends);
+router.get('/recent-activity', authMiddleware, analyticsController.getRecentActivity);
 
 export default router;

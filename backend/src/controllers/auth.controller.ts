@@ -30,6 +30,31 @@ export async function googleAuth(req: Request, res: Response, next: NextFunction
   }
 }
 
+export async function getGoogleUrl(_req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const url = authService.getGoogleUrl();
+    res.json({ success: true, data: { url } });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function googleCallback(req: Request, res: Response, _next: NextFunction): Promise<void> {
+  const frontendUrl = process.env.BETTER_AUTH_URL || 'http://localhost:3000';
+  try {
+    const { code } = req.query;
+    if (!code || typeof code !== 'string') {
+      res.redirect(`${frontendUrl}/auth/google/callback?error=Missing authorization code`);
+      return;
+    }
+    const result = await authService.handleGoogleCallback(code);
+    res.redirect(`${frontendUrl}/auth/google/callback?token=${result.token}`);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Google login failed';
+    res.redirect(`${frontendUrl}/auth/google/callback?error=${encodeURIComponent(message)}`);
+  }
+}
+
 export async function demoLogin(_req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const result = await authService.demoLogin();

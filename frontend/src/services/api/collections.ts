@@ -1,12 +1,13 @@
 import { apiFetch } from '@/lib/api';
 import type { Collection, CreateCollectionPayload, UpdateCollectionPayload } from '@/types/collection.types';
+import type { Prompt } from '@/types/prompt.types';
 
 export function getCollections() {
   return apiFetch<Collection[]>('/collections');
 }
 
 export function getCollection(id: string) {
-  return apiFetch<Collection>(`/collections/${id}`);
+  return apiFetch<{ collection: Collection; prompts: Prompt[] }>(`/collections/${id}`);
 }
 
 export function createCollection(payload: CreateCollectionPayload) {
@@ -29,14 +30,14 @@ export function deleteCollection(id: string) {
   });
 }
 
-export function addPrompt(collectionId: string, promptId: string) {
+export function addPromptToCollection(collectionId: string, promptId: string) {
   return apiFetch<Collection>(`/collections/${collectionId}/prompts`, {
     method: 'POST',
     body: JSON.stringify({ promptId }),
   });
 }
 
-export function removePrompt(collectionId: string, promptId: string) {
+export function removePromptFromCollection(collectionId: string, promptId: string) {
   return apiFetch<Collection>(`/collections/${collectionId}/prompts/${promptId}`, {
     method: 'DELETE',
   });

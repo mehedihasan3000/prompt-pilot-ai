@@ -4,8 +4,10 @@ import type { Template, CreateTemplatePayload, UpdateTemplatePayload } from '@/t
 export function getTemplates(params?: {
   search?: string;
   category?: string;
-  model?: string;
+  targetModel?: string;
+  difficulty?: string;
   sort?: string;
+  order?: string;
   page?: number;
   limit?: number;
 }) {
@@ -18,7 +20,7 @@ export function getTemplates(params?: {
     });
   }
   const query = searchParams.toString();
-  return apiFetch<{ templates: Template[]; total: number; page: number; limit: number }>(
+  return apiFetch<{ templates: Template[]; total: number; page: number; limit: number; totalPages: number }>(
     `/templates${query ? `?${query}` : ''}`
   );
 }
@@ -47,7 +49,7 @@ export function deleteTemplate(id: string) {
   });
 }
 
-export function useTemplate(id: string) {
+export function incrementTemplateUsage(id: string) {
   return apiFetch<Template>(`/templates/${id}/use`, {
     method: 'POST',
   });

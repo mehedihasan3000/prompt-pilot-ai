@@ -3,6 +3,7 @@ export interface Collection {
   userId: string;
   name: string;
   description?: string;
+  color?: string;
   isPublic: boolean;
   promptCount: number;
   createdAt: string;
@@ -12,11 +13,13 @@ export interface Collection {
 export interface CreateCollectionPayload {
   name: string;
   description?: string;
+  color?: string;
   isPublic?: boolean;
 }
 
 export interface UpdateCollectionPayload {
   name?: string;
   description?: string;
+  color?: string;
   isPublic?: boolean;
 }

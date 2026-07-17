@@ -24,12 +24,22 @@ export interface Prompt {
   originalPrompt: string;
   goal?: string;
   targetModel?: string;
+  tone?: string;
+  language?: string;
+  outputLength?: string;
+  outputFormat?: string;
+  audience?: string;
+  category: string;
   tags: string[];
-  isFavorite: boolean;
+  optimizedPrompt?: string;
+  variants: Variant[];
   score?: number;
   scoreBreakdown?: ScoreBreakdown;
-  originalContent?: string;
-  variants: Variant[];
+  strengths?: string[];
+  weaknesses?: string[];
+  recommendations?: string[];
+  followUpQuestions?: string[];
+  favorite: boolean;
   collectionId?: string;
   createdAt: string;
   updatedAt: string;
@@ -40,6 +50,12 @@ export interface CreatePromptPayload {
   originalPrompt: string;
   goal?: string;
   targetModel?: string;
+  tone?: string;
+  language?: string;
+  outputLength?: string;
+  outputFormat?: string;
+  audience?: string;
+  category?: string;
   tags?: string[];
   collectionId?: string;
 }
@@ -49,7 +65,13 @@ export interface UpdatePromptPayload {
   originalPrompt?: string;
   goal?: string;
   targetModel?: string;
+  tone?: string;
+  language?: string;
+  outputLength?: string;
+  outputFormat?: string;
+  audience?: string;
+  category?: string;
   tags?: string[];
-  isFavorite?: boolean;
+  favorite?: boolean;
   collectionId?: string;
 }

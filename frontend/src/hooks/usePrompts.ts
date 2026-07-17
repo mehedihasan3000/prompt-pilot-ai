@@ -5,11 +5,11 @@ import * as promptsApi from '@/services/api/prompts';
 import type { Prompt, CreatePromptPayload, UpdatePromptPayload } from '@/types/prompt.types';
 
 interface PromptsFilters {
-  status?: string;
   search?: string;
-  tag?: string;
-  collectionId?: string;
-  isFavorite?: boolean;
+  category?: string;
+  targetModel?: string;
+  sort?: string;
+  order?: string;
   page?: number;
   limit?: number;
 }
@@ -76,8 +76,8 @@ export function useDeletePrompt() {
 export function useToggleFavorite() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, isFavorite }: { id: string; isFavorite: boolean }) =>
-      promptsApi.toggleFavorite(id, isFavorite),
+    mutationFn: (id: string) =>
+      promptsApi.toggleFavorite(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['prompts'] });
     },

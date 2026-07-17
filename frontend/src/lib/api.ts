@@ -1,3 +1,5 @@
+const AUTH_TOKEN_KEY = 'auth_token';
+
 interface ApiResponse<T> {
   success: boolean;
   data?: T;
@@ -13,17 +15,40 @@ class ApiError extends Error {
   }
 }
 
+function setAuthToken(token: string): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(AUTH_TOKEN_KEY, token);
+  }
+}
+
+function getAuthToken(): string | null {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(AUTH_TOKEN_KEY);
+  }
+  return null;
+}
+
+function clearAuthToken(): void {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+  }
+}
+
 async function apiFetch<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<ApiResponse<T>> {
   try {
+    const token = getAuthToken();
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...(token ? { 'x-user-id': token } : {}),
+      ...(options?.headers as Record<string, string>),
+    };
+
     const url = `/api${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
     const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
+      headers,
       ...options,
     });
 
@@ -38,7 +63,7 @@ async function apiFetch<T>(
 
     return {
       success: true,
-      data: data as T,
+      data: data.data as T,
     };
   } catch (error) {
     if (error instanceof ApiError) {
@@ -51,5 +76,5 @@ async function apiFetch<T>(
   }
 }
 
-export { apiFetch };
+export { apiFetch, setAuthToken, getAuthToken, clearAuthToken };
 export type { ApiResponse, ApiError };

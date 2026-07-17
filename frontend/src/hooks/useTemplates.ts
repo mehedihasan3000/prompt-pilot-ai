@@ -7,8 +7,10 @@ import type { Template, CreateTemplatePayload, UpdateTemplatePayload } from '@/t
 interface TemplatesFilters {
   search?: string;
   category?: string;
-  model?: string;
+  targetModel?: string;
+  difficulty?: string;
   sort?: string;
+  order?: string;
   page?: number;
   limit?: number;
 }

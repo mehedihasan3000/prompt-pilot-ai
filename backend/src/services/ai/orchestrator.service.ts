@@ -35,7 +35,7 @@ export interface OrchestratorResult {
   explanation: string;
   changesMade: string[];
   variants: { type: string; content: string }[];
-  scoreResult: { totalScore: number; grade: string; explanation: string };
+  scoreResult: { totalScore: number; clarity: number; context: number; specificity: number; constraints: number; outputFormat: number; toneAlignment: number; grade: string; explanation: string };
   recommendations: { title: string; description: string; priority: string }[];
   autoTags: { tags: string[]; category: string };
 }
@@ -98,12 +98,12 @@ export async function runFullWorkflow(input: OrchestratorInput): Promise<Orchest
     optimizedPrompt: optimizerResult.optimizedPrompt,
     score: analysis.score,
     scoreBreakdown: {
-      clarity: analysis.score,
-      context: analysis.score,
-      specificity: analysis.score,
-      constraints: analysis.score,
-      outputFormat: analysis.score,
-      toneAlignment: analysis.score,
+      clarity: analysis.clarity,
+      context: analysis.context,
+      specificity: analysis.specificity,
+      constraints: analysis.constraints,
+      outputFormat: analysis.outputFormat,
+      toneAlignment: analysis.toneAlignment,
     },
     strengths: analysis.strengths,
     weaknesses: analysis.weaknesses,
@@ -137,6 +137,12 @@ export async function runFullWorkflow(input: OrchestratorInput): Promise<Orchest
     variants: variants.variants.map(v => ({ type: v.type, content: v.content })),
     scoreResult: {
       totalScore: scoreResult.totalScore,
+      clarity: scoreResult.clarity,
+      context: scoreResult.context,
+      specificity: scoreResult.specificity,
+      constraints: scoreResult.constraints,
+      outputFormat: scoreResult.outputFormat,
+      toneAlignment: scoreResult.toneAlignment,
       grade: scoreResult.grade,
       explanation: scoreResult.explanation,
     },

@@ -22,6 +22,7 @@ export async function chat(input: ChatAssistantInput): Promise<ChatAssistantResu
     const completion = await callGroq<ChatAssistantResult>({
       prompt: input.message,
       systemPrompt: messages.find(m => m.role === 'system')?.content || '',
+      messages,
       temperature: 0.7,
       maxTokens: 1024,
     });

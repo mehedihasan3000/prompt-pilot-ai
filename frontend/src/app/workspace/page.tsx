@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import {
   PenSquare,
   Sparkles,
@@ -93,6 +93,7 @@ export default function WorkspacePage() {
   const [error, setError] = useState<string | null>(null);
   const [answeredQuestions] = useState<Map<string, string>>(new Map());
 
+  const inputRef = useRef<AnalyzeInput | null>(null);
   const steps = [
     'Planner', 'Analyzer', 'Context Checker', 'Weakness Detector',
     'Follow-up Questions', 'Optimizer', 'Variant Generator',
@@ -100,6 +101,7 @@ export default function WorkspacePage() {
   ];
 
   const handleSubmit = useCallback(async (data: AnalyzeInput) => {
+    inputRef.current = data;
     setIsLoading(true);
     setStatus('running');
     setStep(0);
@@ -138,15 +140,15 @@ export default function WorkspacePage() {
   };
 
   const handleSave = async () => {
-    if (!result) return;
+    if (!result || !inputRef.current) return;
     try {
       const res = await apiFetch('/prompts', {
         method: 'POST',
         body: JSON.stringify({
           title: 'Saved from Workspace',
-          originalPrompt: '',
-          goal: result.plan.intent,
-          targetModel: result.plan.taskType,
+          originalPrompt: inputRef.current.originalPrompt,
+          goal: inputRef.current.goal,
+          targetModel: inputRef.current.targetModel,
         }),
       });
       if (res.success) {

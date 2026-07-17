@@ -4,6 +4,7 @@ import type { ChatCompletionMessageParam } from 'groq-sdk/resources/chat/complet
 export interface AiCallOptions {
   prompt: string;
   systemPrompt?: string;
+  messages?: { role: string; content: string }[];
   temperature?: number;
   maxTokens?: number;
 }
@@ -41,9 +42,10 @@ export async function callGemini<T>(options: AiCallOptions): Promise<T> {
 }
 
 export async function callGroq<T>(options: AiCallOptions): Promise<T> {
+  const messages = options.messages ?? buildGroqMessages(options.systemPrompt, options.prompt);
   const completion = await groq.chat.completions.create({
     model: 'llama3-8b-8192',
-    messages: buildGroqMessages(options.systemPrompt, options.prompt),
+    messages,
     temperature: options.temperature ?? 0.7,
     max_tokens: options.maxTokens ?? 2048,
     response_format: { type: 'json_object' },

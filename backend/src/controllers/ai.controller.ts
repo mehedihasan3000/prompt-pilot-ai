@@ -54,17 +54,11 @@ export async function recommend(req: Request, res: Response, next: NextFunction)
 }
 
 export async function chat(req: Request, res: Response, next: NextFunction): Promise<void> {
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-
   try {
     const result = await chatAssistantService.chat(req.body);
-    res.write(`data: ${JSON.stringify(result)}\n\n`);
-    res.end();
+    res.json({ success: true, data: result });
   } catch (error) {
-    res.write(`data: ${JSON.stringify({ error: 'Failed to process chat' })}\n\n`);
-    res.end();
+    next(error);
   }
 }
 

@@ -44,7 +44,7 @@ const DEFAULT_FOLLOW_UPS = [
 export default function AssistantPage() {
   const router = useRouter();
   const { data: user, isLoading: authLoading } = useCurrentUser();
-  const { messages, isSending, error: chatError, sendMessage, clearMessages } = useChat();
+  const { messages, isSending, error: chatError, sendMessage, clearMessages, setMessages } = useChat();
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [conversationsLoading, setConversationsLoading] = useState(true);
@@ -131,15 +131,12 @@ export default function AssistantPage() {
       try {
         const res = await getMessages(id);
         if (res.success && res.data) {
-          clearMessages();
-          for (const msg of res.data) {
-            sendMessage(msg.content);
-          }
+          setMessages(res.data);
         }
       } catch {
       }
     },
-    [clearMessages, sendMessage]
+    [setMessages]
   );
 
   const handleSend = useCallback(

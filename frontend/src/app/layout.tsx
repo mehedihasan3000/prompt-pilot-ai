@@ -11,9 +11,29 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'PromptPilot AI',
+  title: {
+    default: 'PromptPilot AI',
+    template: '%s | PromptPilot AI',
+  },
   description:
     'Write better AI prompts with an intelligent prompt optimization agent. Analyze, score, and optimize your prompts for ChatGPT, Claude, Gemini, and more.',
+  keywords: ['AI prompts', 'prompt engineering', 'prompt optimization', 'ChatGPT', 'Claude', 'Gemini', 'AI tools'],
+  authors: [{ name: 'PromptPilot AI' }],
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'PromptPilot AI',
+    title: 'PromptPilot AI',
+    description:
+      'Write better AI prompts with an intelligent prompt optimization agent. Analyze, score, and optimize your prompts for ChatGPT, Claude, Gemini, and more.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PromptPilot AI',
+    description:
+      'Write better AI prompts with an intelligent prompt optimization agent. Analyze, score, and optimize your prompts for ChatGPT, Claude, Gemini, and more.',
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({

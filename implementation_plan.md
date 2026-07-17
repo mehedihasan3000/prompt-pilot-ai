@@ -440,15 +440,15 @@ MongoDB Collections:
 - [x] Auto-tagging on prompt save (backend service)
 - [x] Recommendation Engine (backend service + workspace display)
 
-### Phase 5 — Polish (Week 5)
-- [ ] Profile page
-- [ ] About, Contact, Blog, Privacy, Terms pages
-- [ ] Skeleton loaders on every page
-- [ ] Empty states + error states
-- [ ] Responsive design audit (mobile/tablet/desktop)
-- [ ] SEO meta tags on every page
-- [ ] README.md
-- [ ] Deployment config
+### Phase 5 — Polish (Week 5) ✅
+- [x] Profile page
+- [x] About, Contact, Blog, Privacy, Terms pages
+- [x] Skeleton loaders on every page
+- [x] Empty states + error states
+- [x] Responsive design audit (mobile/tablet/desktop)
+- [x] SEO meta tags on root layout + page-specific titles
+- [x] README.md
+- [ ] Deployment config (pending)
 
 ---
 

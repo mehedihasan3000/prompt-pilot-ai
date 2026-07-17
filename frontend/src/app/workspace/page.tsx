@@ -28,6 +28,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { toast } from '@/components/ui/Toast';
+import { apiFetch } from '@/lib/api';
 import { analyzePrompt } from '@/services/api/ai';
 import type { AnalyzeInput } from '@/services/api/ai';
 import type { OrchestratorResult } from '@/types/ai.types';
@@ -139,9 +140,8 @@ export default function WorkspacePage() {
   const handleSave = async () => {
     if (!result) return;
     try {
-      const res = await fetch('/api/prompts', {
+      const res = await apiFetch('/prompts', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: 'Saved from Workspace',
           originalPrompt: '',
@@ -149,8 +149,7 @@ export default function WorkspacePage() {
           targetModel: result.plan.taskType,
         }),
       });
-      const data = await res.json();
-      if (data.success) {
+      if (res.success) {
         toast('Saved successfully!', 'success');
       } else {
         toast('Failed to save', 'error');

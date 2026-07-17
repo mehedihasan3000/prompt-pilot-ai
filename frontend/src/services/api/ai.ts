@@ -53,9 +53,8 @@ export function getRecommendations(data: { originalPrompt: string; optimizedProm
 }
 
 export function sendChatMessage(data: { message: string; conversationHistory?: { role: 'user' | 'assistant'; content: string }[] }) {
-  return fetch('/api/ai/chat', {
+  return apiFetch<ChatResponse>('/ai/chat', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
 }

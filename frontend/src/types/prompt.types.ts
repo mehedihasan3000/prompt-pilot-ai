@@ -1,10 +1,10 @@
 export interface ScoreBreakdown {
   clarity: number;
-  specificity: number;
   context: number;
-  structure: number;
+  specificity: number;
   constraints: number;
-  overall: number;
+  outputFormat: number;
+  toneAlignment: number;
 }
 
 export interface Variant {
@@ -21,12 +21,11 @@ export interface Prompt {
   id: string;
   userId: string;
   title: string;
-  content: string;
+  originalPrompt: string;
   goal?: string;
-  model?: string;
+  targetModel?: string;
   tags: string[];
   isFavorite: boolean;
-  status: 'draft' | 'analyzed' | 'optimized' | 'completed';
   score?: number;
   scoreBreakdown?: ScoreBreakdown;
   originalContent?: string;
@@ -38,20 +37,19 @@ export interface Prompt {
 
 export interface CreatePromptPayload {
   title: string;
-  content: string;
+  originalPrompt: string;
   goal?: string;
-  model?: string;
+  targetModel?: string;
   tags?: string[];
   collectionId?: string;
 }
 
 export interface UpdatePromptPayload {
   title?: string;
-  content?: string;
+  originalPrompt?: string;
   goal?: string;
-  model?: string;
+  targetModel?: string;
   tags?: string[];
   isFavorite?: boolean;
-  status?: 'draft' | 'analyzed' | 'optimized' | 'completed';
   collectionId?: string;
 }

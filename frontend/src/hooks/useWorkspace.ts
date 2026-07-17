@@ -2,7 +2,6 @@
 
 import { useState, useCallback } from 'react';
 import type { CreatePromptPayload, ScoreBreakdown } from '@/types/prompt.types';
-import type { AnalysisResult, OptimizedResult, Recommendation } from '@/types/ai.types';
 
 interface WorkspaceState {
   title: string;
@@ -13,17 +12,37 @@ interface WorkspaceState {
   collectionId: string;
 }
 
+interface WorkspaceAnalysis {
+  score: number;
+  strengths: string[];
+  weaknesses: string[];
+  missingContext: string[];
+  analysis: string;
+}
+
+interface WorkspaceOptimized {
+  optimizedPrompt: string;
+  explanation: string;
+  changesMade: string[];
+}
+
+interface WorkspaceRecommendation {
+  title: string;
+  description: string;
+  priority: string;
+}
+
 interface WorkspaceReturn {
   state: WorkspaceState;
-  analysis: AnalysisResult | null;
-  optimizedResults: OptimizedResult[];
-  recommendations: Recommendation[];
+  analysis: WorkspaceAnalysis | null;
+  optimizedResults: WorkspaceOptimized[];
+  recommendations: WorkspaceRecommendation[];
   isAnalyzing: boolean;
   isOptimizing: boolean;
   setField: <K extends keyof WorkspaceState>(field: K, value: WorkspaceState[K]) => void;
-  setAnalysis: (analysis: AnalysisResult | null) => void;
-  setOptimizedResults: (results: OptimizedResult[]) => void;
-  setRecommendations: (recs: Recommendation[]) => void;
+  setAnalysis: (analysis: WorkspaceAnalysis | null) => void;
+  setOptimizedResults: (results: WorkspaceOptimized[]) => void;
+  setRecommendations: (recs: WorkspaceRecommendation[]) => void;
   setIsAnalyzing: (val: boolean) => void;
   setIsOptimizing: (val: boolean) => void;
   reset: () => void;
@@ -41,9 +60,9 @@ const initialState: WorkspaceState = {
 
 export function useWorkspace(): WorkspaceReturn {
   const [state, setState] = useState<WorkspaceState>(initialState);
-  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
-  const [optimizedResults, setOptimizedResults] = useState<OptimizedResult[]>([]);
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [analysis, setAnalysis] = useState<WorkspaceAnalysis | null>(null);
+  const [optimizedResults, setOptimizedResults] = useState<WorkspaceOptimized[]>([]);
+  const [recommendations, setRecommendations] = useState<WorkspaceRecommendation[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isOptimizing, setIsOptimizing] = useState(false);
 
@@ -66,9 +85,9 @@ export function useWorkspace(): WorkspaceReturn {
   const getCreatePayload = useCallback((): CreatePromptPayload => {
     return {
       title: state.title,
-      content: state.content,
+      originalPrompt: state.content,
       goal: state.goal || undefined,
-      model: state.model || undefined,
+      targetModel: state.model || undefined,
       tags: state.tags.length > 0 ? state.tags : undefined,
       collectionId: state.collectionId || undefined,
     };

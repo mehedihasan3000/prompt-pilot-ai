@@ -1,45 +1,68 @@
 import { apiFetch } from '@/lib/api';
-import type { AnalysisResult, OptimizedResult, VariantResult, ScoreResult, Recommendation, ChatMessage, AutoTagResult } from '@/types/ai.types';
+import type { OrchestratorResult, OptimizeResult, VariantItem, ScoreResult, RecommendationItem, ChatResponse, AutoTagResult } from '@/types/ai.types';
 
-export function analyzePrompt(promptId: string) {
-  return apiFetch<AnalysisResult>(`/ai/analyze/${promptId}`, {
+export interface AnalyzeInput {
+  originalPrompt: string;
+  goal: string;
+  targetModel: string;
+  tone: string;
+  language: string;
+  outputLength: string;
+  outputFormat: string;
+  audience?: string;
+  category?: string;
+  extraContext?: string;
+  constraints?: string;
+  examples?: string;
+  creativityLevel?: number;
+}
+
+export function analyzePrompt(data: AnalyzeInput) {
+  return apiFetch<OrchestratorResult>('/ai/analyze', {
     method: 'POST',
+    body: JSON.stringify(data),
   });
 }
 
-export function optimizePrompt(promptId: string, goal?: string) {
-  return apiFetch<OptimizedResult>(`/ai/optimize/${promptId}`, {
+export function optimizePrompt(data: Partial<AnalyzeInput>) {
+  return apiFetch<OptimizeResult>('/ai/optimize', {
     method: 'POST',
-    body: JSON.stringify({ goal }),
+    body: JSON.stringify(data),
   });
 }
 
-export function generateVariants(promptId: string, count?: number) {
-  return apiFetch<VariantResult>(`/ai/variants/${promptId}`, {
+export function generateVariants(data: { originalPrompt: string; optimizedPrompt: string; goal: string; targetModel: string; tone: string }) {
+  return apiFetch<{ variants: VariantItem[] }>('/ai/generate-variants', {
     method: 'POST',
-    body: JSON.stringify({ count: count || 3 }),
+    body: JSON.stringify(data),
   });
 }
 
-export function scorePrompt(promptId: string) {
-  return apiFetch<ScoreResult>(`/ai/score/${promptId}`, {
+export function scorePrompt(data: { originalPrompt: string; optimizedPrompt: string; goal: string; targetModel: string; tone: string }) {
+  return apiFetch<ScoreResult>('/ai/score', {
     method: 'POST',
+    body: JSON.stringify(data),
   });
 }
 
-export function getRecommendations(promptId: string) {
-  return apiFetch<Recommendation[]>(`/ai/recommendations/${promptId}`);
-}
-
-export function sendChatMessage(conversationId: string | null, message: string) {
-  return apiFetch<{ reply: ChatMessage; conversationId: string }>('/ai/chat', {
+export function getRecommendations(data: { originalPrompt: string; optimizedPrompt: string; score: number; strengths: string[]; weaknesses: string[] }) {
+  return apiFetch<{ recommendations: RecommendationItem[] }>('/ai/recommend', {
     method: 'POST',
-    body: JSON.stringify({ conversationId, message }),
+    body: JSON.stringify(data),
   });
 }
 
-export function autoTag(promptId: string) {
-  return apiFetch<AutoTagResult>(`/ai/auto-tag/${promptId}`, {
+export function sendChatMessage(data: { message: string; conversationHistory?: { role: 'user' | 'assistant'; content: string }[] }) {
+  return fetch('/api/ai/chat', {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+}
+
+export function autoTag(data: { originalPrompt: string; goal: string; category?: string; outputFormat: string; targetModel: string }) {
+  return apiFetch<AutoTagResult>('/ai/auto-tag', {
+    method: 'POST',
+    body: JSON.stringify(data),
   });
 }

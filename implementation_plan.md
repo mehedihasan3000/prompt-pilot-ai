@@ -37,7 +37,7 @@ The application uses a **monorepo** structure with a Next.js frontend and a Node
 
 ```
 prompt-pilot-ai/
-├── frontend/          (Next.js 15 App Router, TypeScript, Tailwind CSS)
+├── frontend/          (Next.js 16 App Router, TypeScript, Tailwind CSS)
 ├── backend/           (Express.js, TypeScript, MongoDB native driver)
 └── README.md
 ```
@@ -235,7 +235,7 @@ GET /api/analytics/score-trends
 #### [NEW] Setup Files
 | File | Purpose |
 |------|---------|
-| `package.json` | Next.js 15, TypeScript, TailwindCSS, TanStack Query v5, Recharts, better-auth/react, Gravity UI Icons |
+| `package.json` | Next.js 16, TypeScript, TailwindCSS, TanStack Query v5, Recharts, better-auth/react, Gravity UI Icons |
 | `tailwind.config.ts` | Custom theme (Indigo primary, Emerald success, Amber accent, Slate neutral) |
 | `next.config.ts` | API proxy rewrites to backend |
 | `src/lib/queryClient.ts` | TanStack Query client config |
@@ -406,23 +406,22 @@ MongoDB Collections:
 
 ## Phased Build Order (MVP → Full)
 
-### Phase 1 — Foundation (Week 1)
-- [ ] Monorepo scaffold (backend + frontend)
-- [ ] TypeScript config, linting, prettier
-- [ ] MongoDB connection + model types
-- [ ] Better Auth setup (email + Google + demo)
-- [ ] Tailwind design system + global styles
-- [ ] Navbar, Footer, layout components
-- [ ] Landing page (all 9 sections)
-- [ ] Login, Register pages
+### Phase 1 — Foundation (Week 1) ✅
+- [x] Monorepo scaffold (backend + frontend)
+- [x] TypeScript config, linting, prettier
+- [x] MongoDB connection + model types
+- [x] Better Auth setup (email + Google + demo)
+- [x] Tailwind design system + global styles
+- [x] Navbar, Footer, layout components
+- [x] Landing page (all 9 sections)
+- [x] Login, Register pages
 
-### Phase 2 — Core Feature (Week 2)
-- [ ] AI service layer (all 8 agent services)
-- [ ] Prompt Engineering prompt templates
-- [ ] `/api/ai/analyze` endpoint (full orchestrator)
-- [ ] `/api/ai/optimize`, `/api/ai/generate-variants`, `/api/ai/score`
-- [ ] Prompt Workspace page (form + result display)
-- [ ] Agent progress indicator UI
+### Phase 2 — Core Feature (Week 2) ✅
+- [x] AI service layer (all 12 agent services)
+- [x] Prompt Engineering prompt templates (5 templates)
+- [x] `/api/ai/analyze` endpoint (full orchestrator)
+- [x] `/api/ai/optimize`, `/api/ai/generate-variants`, `/api/ai/score`, `/api/ai/recommend`, `/api/ai/chat`, `/api/ai/auto-tag`
+- [x] Prompt Workspace page (form + result display + agent progress)
 
 ### Phase 3 — Data Management (Week 3)
 - [ ] Prompt CRUD API + frontend History page

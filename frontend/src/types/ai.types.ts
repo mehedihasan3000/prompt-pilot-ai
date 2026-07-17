@@ -1,46 +1,49 @@
-import type { ScoreBreakdown } from './prompt.types';
-
-export interface AnalysisResult {
-  id: string;
-  promptId: string;
-  summary: string;
-  strengths: string[];
-  weaknesses: string[];
-  suggestions: string[];
-  score: number;
-  scoreBreakdown: ScoreBreakdown;
-  createdAt: string;
+export interface OrchestratorResult {
+  plan: { intent: string; taskType: string };
+  analysis: { score: number; strengths: string[]; weaknesses: string[]; missingContext: string[]; analysis: string };
+  contextCheck: { missingContextPoints: string[]; requiredFollowUps: string[] };
+  followUpQuestions: string[];
+  optimizedPrompt: string;
+  explanation: string;
+  changesMade: string[];
+  variants: { type: string; content: string }[];
+  scoreResult: { totalScore: number; clarity: number; context: number; specificity: number; constraints: number; outputFormat: number; toneAlignment: number; grade: string; explanation: string };
+  recommendations: { title: string; description: string; priority: string }[];
+  autoTags: { tags: string[]; category: string };
 }
 
-export interface OptimizedResult {
-  id: string;
-  promptId: string;
+export interface OptimizeResult {
+  optimizedPrompt: string;
+  explanation: string;
+  changesMade: string[];
+}
+
+export interface VariantItem {
+  type: string;
   content: string;
-  label: string;
-  improvements: string[];
-  score: number;
-  scoreBreakdown: ScoreBreakdown;
-  createdAt: string;
-}
-
-export interface VariantResult {
-  variants: OptimizedResult[];
 }
 
 export interface ScoreResult {
-  score: number;
-  scoreBreakdown: ScoreBreakdown;
-  feedback: string;
+  totalScore: number;
+  clarity: number;
+  context: number;
+  specificity: number;
+  constraints: number;
+  outputFormat: number;
+  toneAlignment: number;
+  grade: string;
+  explanation: string;
 }
 
-export interface Recommendation {
-  id: string;
-  promptId: string;
-  type: 'clarity' | 'specificity' | 'context' | 'structure' | 'constraints';
+export interface RecommendationItem {
   title: string;
   description: string;
   priority: 'low' | 'medium' | 'high';
-  category: string;
+}
+
+export interface ChatResponse {
+  reply: string;
+  suggestedFollowUps: string[];
 }
 
 export interface ChatMessage {

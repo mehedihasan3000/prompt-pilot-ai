@@ -1,21 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
+import * as optimizerService from '../services/ai/optimizer.service';
+import * as analyzerService from '../services/ai/analyzer.service';
+import * as variantGeneratorService from '../services/ai/variantGenerator.service';
+import * as qualityEvaluatorService from '../services/ai/qualityEvaluator.service';
+import * as recommenderService from '../services/ai/recommender.service';
+import * as chatAssistantService from '../services/ai/chatAssistant.service';
+import * as autoTaggerService from '../services/ai/autoTagger.service';
+import * as orchestratorService from '../services/ai/orchestrator.service';
 
 export async function analyze(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const mockResult = {
-      clarity: 7,
-      context: 6,
-      specificity: 5,
-      constraints: 4,
-      outputFormat: 8,
-      toneAlignment: 6,
-      overallScore: 6,
-      strengths: ['Clear goal', 'Good structure'],
-      weaknesses: ['Missing context', 'Vague constraints'],
-      recommendations: ['Add specific examples', 'Define output format'],
-      followUpQuestions: ['What is the target audience?', 'What tone should be used?'],
-    };
-    res.json({ success: true, data: mockResult });
+    const result = await orchestratorService.runFullWorkflow(req.body);
+    res.json({ success: true, data: result });
   } catch (error) {
     next(error);
   }
@@ -23,12 +19,8 @@ export async function analyze(req: Request, res: Response, next: NextFunction): 
 
 export async function optimize(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const mockResult = {
-      optimizedPrompt: 'This is an optimized version of your prompt with improved clarity and structure.',
-      changes: ['Added context', 'Improved specificity', 'Added constraints'],
-      improvement: 25,
-    };
-    res.json({ success: true, data: mockResult });
+    const result = await optimizerService.optimize(req.body);
+    res.json({ success: true, data: result });
   } catch (error) {
     next(error);
   }
@@ -36,14 +28,8 @@ export async function optimize(req: Request, res: Response, next: NextFunction):
 
 export async function generateVariants(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const mockResult = {
-      variants: [
-        { type: 'concise', content: 'Concise version of the prompt.' },
-        { type: 'detailed', content: 'Detailed version with full context and examples.' },
-        { type: 'creative', content: 'Creative rephrasing with different approach.' },
-      ],
-    };
-    res.json({ success: true, data: mockResult });
+    const result = await variantGeneratorService.generateVariants(req.body);
+    res.json({ success: true, data: result });
   } catch (error) {
     next(error);
   }
@@ -51,18 +37,8 @@ export async function generateVariants(req: Request, res: Response, next: NextFu
 
 export async function score(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const mockResult = {
-      score: 7.5,
-      scoreBreakdown: {
-        clarity: 8,
-        context: 7,
-        specificity: 6,
-        constraints: 7,
-        outputFormat: 9,
-        toneAlignment: 8,
-      },
-    };
-    res.json({ success: true, data: mockResult });
+    const result = await qualityEvaluatorService.evaluateQuality(req.body);
+    res.json({ success: true, data: result });
   } catch (error) {
     next(error);
   }
@@ -70,38 +46,32 @@ export async function score(req: Request, res: Response, next: NextFunction): Pr
 
 export async function recommend(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const mockResult = {
-      recommendations: [
-        { title: 'Add target audience', description: 'Specify who the output is for', priority: 'high' },
-        { title: 'Include examples', description: 'Provide examples of desired output', priority: 'medium' },
-        { title: 'Define constraints', description: 'Set boundaries for the AI', priority: 'low' },
-      ],
-    };
-    res.json({ success: true, data: mockResult });
+    const result = await recommenderService.recommend(req.body);
+    res.json({ success: true, data: result });
   } catch (error) {
     next(error);
   }
 }
 
 export async function chat(req: Request, res: Response, next: NextFunction): Promise<void> {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+
   try {
-    const mockResult = {
-      reply: 'I can help you improve your prompt. Here are some suggestions based on best practices...',
-      suggestions: ['Make it more specific', 'Add context about your audience'],
-    };
-    res.json({ success: true, data: mockResult });
+    const result = await chatAssistantService.chat(req.body);
+    res.write(`data: ${JSON.stringify(result)}\n\n`);
+    res.end();
   } catch (error) {
-    next(error);
+    res.write(`data: ${JSON.stringify({ error: 'Failed to process chat' })}\n\n`);
+    res.end();
   }
 }
 
 export async function autoTag(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const mockResult = {
-      tags: ['writing', 'content-creation', 'marketing', 'ai-prompting'],
-      category: 'Content Writing',
-    };
-    res.json({ success: true, data: mockResult });
+    const result = await autoTaggerService.autoTag(req.body);
+    res.json({ success: true, data: result });
   } catch (error) {
     next(error);
   }

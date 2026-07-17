@@ -1,0 +1,297 @@
+# PromptPilot AI — Project Roadmap
+
+> Living roadmap. OpenCode updates this file as work progresses.
+
+---
+
+## Phase 1 — Foundation
+
+### Monorepo Scaffold
+- [ ] Create root `package.json` with workspace config
+- [ ] Create `.gitignore` (node_modules, .env, dist, .next)
+- [ ] Create `README.md` with full documentation
+
+### Backend Setup
+- [ ] Initialize `backend/package.json` with all dependencies
+- [ ] Configure `backend/tsconfig.json` (strict)
+- [ ] Create `src/server.ts` — HTTP server entry point
+- [ ] Create `src/app.ts` — Express app (CORS, Helmet, rate-limit, routes)
+- [ ] Create `.env.example` with all required env vars
+- [ ] Create `src/config/db.ts` — MongoDB native driver connection
+- [ ] Create `src/config/env.ts` — Zod-validated env config
+- [ ] Create `src/config/ai.ts` — Gemini + Groq client init
+- [ ] Create all middleware: auth, validate, rateLimit, error
+- [ ] Create all TypeScript model types (9 collections)
+- [ ] Create all Zod validators (auth, prompt, template, collection, review)
+- [ ] Create all controllers (9 controllers)
+- [ ] Create all routes (9 route files)
+- [ ] Create business logic services (auth, prompt, template, collection, analytics, recommendation)
+
+### Auth System
+- [ ] Set up Better Auth (email/password, Google OAuth, demo login)
+- [ ] Implement POST /api/auth/register
+- [ ] Implement POST /api/auth/login
+- [ ] Implement POST /api/auth/google
+- [ ] Implement POST /api/auth/demo-login
+- [ ] Implement POST /api/auth/logout
+- [ ] Implement GET /api/auth/me
+- [ ] Implement user profile CRUD (GET/PATCH /api/users/profile, DELETE /api/users/account)
+
+### Frontend Setup
+- [ ] Initialize Next.js 15 with TypeScript + Tailwind CSS
+- [ ] Configure Tailwind theme (Indigo/Emerald/Amber/Slate)
+- [ ] Set up Plus Jakarta Sans font
+- [ ] Create TanStack Query client
+- [ ] Create Better Auth client init
+- [ ] Create typed API fetch wrapper `src/lib/api.ts`
+- [ ] Create API service modules (auth, prompts, templates, ai, analytics, collections, reviews, conversations)
+
+### Layout Components
+- [ ] Navbar (sticky, full-width, responsive, active route indicator, auth conditional)
+- [ ] Footer (functional links, social, copyright, privacy/terms, responsive)
+- [ ] Sidebar (dashboard desktop navigation)
+- [ ] MobileNav (collapsible mobile menu)
+
+### UI Primitives
+- [ ] Button (variants: primary/secondary/ghost/danger, sizes: sm/md/lg)
+- [ ] Input (label, error state, helper text)
+- [ ] Select, Textarea, Badge, Avatar
+- [ ] Modal (confirmation dialogs)
+- [ ] Skeleton (card, row, chart loaders)
+- [ ] EmptyState (contextual messages with icons)
+- [ ] ErrorState (with retry button)
+- [ ] Toast (success/error notifications)
+
+### Landing Page
+- [ ] Hero section (animated typing demo, before/after comparison, CTAs)
+- [ ] Features section (8 feature cards)
+- [ ] How It Works section (6-step timeline)
+- [ ] AI Agent Workflow section (visual pipeline)
+- [ ] Prompt Templates section (live DB preview, 4 cols)
+- [ ] Statistics section (live DB counters)
+- [ ] Testimonials section (real data only, hide if empty)
+- [ ] FAQ section (6+ accordion items)
+- [ ] Newsletter / Final CTA section
+
+### Auth Pages
+- [ ] Login page (email/password + Google + demo login)
+- [ ] Register page (name, email, password, confirm password)
+
+---
+
+## Phase 2 — Core AI Feature
+
+### AI Service Layer
+- [ ] `planner.service.ts` — Understand goal, task type, context, optimization path
+- [ ] `analyzer.service.ts` — Check clarity, specificity, role, tone, output format
+- [ ] `contextChecker.service.ts` — Identify missing context
+- [ ] `weaknessDetector.service.ts` — Find ambiguity, vague instructions
+- [ ] `followUp.service.ts` — Generate smart follow-up questions
+- [ ] `optimizer.service.ts` — Rewrite prompt with explanation
+- [ ] `variantGenerator.service.ts` — 9 variant types
+- [ ] `qualityEvaluator.service.ts` — Score 0–100 across 6 categories
+- [ ] `recommender.service.ts` — Suggest improvements
+- [ ] `autoTagger.service.ts` — Auto-generate tags and category
+- [ ] `chatAssistant.service.ts` — Context-aware chat
+- [ ] `orchestrator.service.ts` — Master service, runs all agents in sequence
+
+### Prompt Engineering Templates
+- [ ] `analyzer.prompt.ts` — Structured JSON output spec
+- [ ] `optimizer.prompt.ts` — Optimized prompt + changes explanation
+- [ ] `variants.prompt.ts` — Array of 9 variant objects
+- [ ] `recommender.prompt.ts` — Prioritized recommendation list
+- [ ] `chat.prompt.ts` — Context-aware assistant system prompt
+
+### AI API Endpoints
+- [ ] POST /api/ai/analyze — Full agentic workflow orchestrator
+- [ ] POST /api/ai/optimize — Optimizer only
+- [ ] POST /api/ai/generate-variants — Variant generator
+- [ ] POST /api/ai/score — Quality evaluator
+- [ ] POST /api/ai/recommend — Recommender engine
+- [ ] POST /api/ai/chat — Streaming SSE chat assistant
+- [ ] POST /api/ai/auto-tag — Auto-tagging
+
+### Prompt Workspace
+- [ ] WorkspaceForm component (all input fields)
+- [ ] AnalysisResult component (score, strengths, weaknesses)
+- [ ] OptimizedPrompt component (with copy button)
+- [ ] VariantCard component (each variant with copy)
+- [ ] FollowUpQuestions component (interactive Q&A)
+- [ ] ScoreRing component (animated circular display)
+- [ ] AgentProgress component (step-by-step status indicator)
+- [ ] /workspace page (form + results + agent progress)
+
+---
+
+## Phase 3 — Data Management
+
+### Prompts (Backend + Frontend)
+- [ ] POST /api/prompts — Save prompt result
+- [ ] GET /api/prompts — List user's prompts
+- [ ] GET /api/prompts/:id — Single prompt detail
+- [ ] PATCH /api/prompts/:id — Update prompt
+- [ ] DELETE /api/prompts/:id — Delete prompt
+- [ ] PATCH /api/prompts/:id/favorite — Toggle favorite
+- [ ] /history page (search, filter, sort, paginate)
+- [ ] /prompts/:id page (detail + re-optimize)
+
+### Templates (Backend + Frontend)
+- [ ] POST /api/templates — Create template
+- [ ] GET /api/templates — Public listing (search, filter, sort, pagination)
+- [ ] GET /api/templates/:id — Template detail
+- [ ] PATCH /api/templates/:id — Update template
+- [ ] DELETE /api/templates/:id — Delete template
+- [ ] POST /api/templates/:id/use — Increment usage count
+- [ ] TemplateCard component (consistent 4/2/1 layout)
+- [ ] /explore page (search bar, 5+ filters, sort options, pagination 8/12/16)
+- [ ] /templates/:id page (detail, reviews, related, auth-gated actions)
+- [ ] /templates/add page (protected form with preview)
+- [ ] /templates/manage page (table/grid with CRUD, confirmation modal)
+
+### Collections (Backend + Frontend)
+- [ ] POST /api/collections — Create
+- [ ] GET /api/collections — List user's collections
+- [ ] GET /api/collections/:id — Collection detail
+- [ ] PATCH /api/collections/:id — Update
+- [ ] DELETE /api/collections/:id — Delete
+- [ ] POST /api/collections/:id/prompts — Add prompt to collection
+- [ ] DELETE /api/collections/:id/prompts/:promptId — Remove from collection
+- [ ] /collections page (grid + CRUD + view prompts by collection)
+
+### Reviews (Backend + Frontend)
+- [ ] POST /api/templates/:id/reviews — Submit review
+- [ ] GET /api/templates/:id/reviews — List reviews
+- [ ] PATCH /api/reviews/:id — Update review
+- [ ] DELETE /api/reviews/:id — Delete review
+- [ ] Review display on template detail page
+- [ ] Average rating on TemplateCard
+
+---
+
+## Phase 4 — Advanced Features
+
+### AI Chat Assistant
+- [ ] ChatBubble component (user + assistant)
+- [ ] ChatInput component (with send button)
+- [ ] TypingIndicator component
+- [ ] Suggested follow-up prompts
+- [ ] Conversation history sidebar
+- [ ] /assistant page (full chat UI)
+
+### Conversations API
+- [ ] POST /api/conversations — Create conversation
+- [ ] GET /api/conversations — List conversations
+- [ ] GET /api/conversations/:id — Get conversation
+- [ ] DELETE /api/conversations/:id — Delete
+- [ ] GET /api/conversations/:id/messages — Get messages
+
+### Analytics
+- [ ] Backend aggregation pipelines (prompts-over-time, category-usage, model-usage, score-trends)
+- [ ] GET /api/analytics/summary
+- [ ] GET /api/analytics/prompts-over-time
+- [ ] GET /api/analytics/category-usage
+- [ ] GET /api/analytics/model-usage
+- [ ] GET /api/analytics/score-trends
+- [ ] ScoreOverTimeChart (Recharts)
+- [ ] PromptsPerWeekChart (Recharts)
+- [ ] CategoryPieChart (Recharts)
+- [ ] ModelBarChart (Recharts)
+- [ ] ScoreByCategoryChart (Recharts)
+- [ ] /analytics page (5 charts + 6 metrics)
+
+### Dashboard
+- [ ] 6 stat cards (total prompts, avg score, saved templates, favorites, most used model, most used category)
+- [ ] 4 Recharts charts
+- [ ] Recent activity feed
+- [ ] /dashboard page
+
+### Auto-Tagging & Recommendations
+- [ ] Auto-tag on prompt save
+- [ ] Recommendation display on dashboard/workspace
+- [ ] Recommendation engine (uses prompt history + scores)
+
+---
+
+## Phase 5 — Polish
+
+### Additional Pages
+- [ ] /about page (mission, workflow explanation)
+- [ ] /contact page (contact form, email, social links)
+- [ ] /blog page (prompt engineering tips)
+- [ ] /privacy page (privacy policy)
+- [ ] /terms page (terms of service)
+- [ ] /profile page (edit name/image, password, delete account)
+
+### UX Polish
+- [ ] Skeleton loaders on every data-driven page
+- [ ] Empty states for all list pages
+- [ ] Error states with retry on all data-driven pages
+- [ ] Responsive design audit (mobile/tablet/desktop)
+- [ ] Loading spinners on form submissions
+- [ ] Disabled buttons during submit
+- [ ] Toast notifications for all CRUD actions
+
+### SEO
+- [ ] Meta tags on every page
+- [ ] Open Graph tags
+- [ ] Structured data
+
+### Deployment
+- [ ] Backend deployment config
+- [ ] Frontend deployment config (Vercel)
+- [ ] Environment variable setup
+- [ ] Production build verification
+
+### Final Checks
+- [ ] No placeholder/dummy content anywhere
+- [ ] All protected routes redirect to /login
+- [ ] Rate limiting working on /api/ai/*
+- [ ] README.md complete with screenshots
+- [ ] Live URL functional
+
+---
+
+## Assignment Requirements Checklist
+
+### Must-Have
+- [ ] Next.js frontend
+- [ ] TypeScript (frontend + backend)
+- [ ] Tailwind CSS
+- [ ] TanStack Query
+- [ ] Recharts
+- [ ] Node.js + Express.js backend
+- [ ] MongoDB (native driver, no Mongoose)
+- [ ] Better Auth (email/password + Google + demo login)
+- [ ] Responsive navbar
+- [ ] Minimum 7 landing page sections
+- [ ] Functional footer
+- [ ] Listing/card section (templates)
+- [ ] 4 cards per row on desktop, 2 tablet, 1 mobile
+- [ ] Skeleton loader
+- [ ] Public details page
+- [ ] Search + 2+ filters
+- [ ] Sorting + pagination
+- [ ] Protected Add Items page
+- [ ] Protected Manage Items page
+- [ ] 2+ additional pages (about, contact, privacy, terms)
+- [ ] 2+ agentic AI features (5 implemented)
+- [ ] No dummy content
+- [ ] Fully responsive design
+- [ ] Live deployment
+
+### PromptPilot-Specific
+- [ ] Prompt analyzer
+- [ ] Prompt optimizer
+- [ ] Prompt score (0–100)
+- [ ] Prompt variants (9 types)
+- [ ] Follow-up questions
+- [ ] AI recommendations
+- [ ] AI chat assistant
+- [ ] Prompt history
+- [ ] Collections
+- [ ] Favorites
+- [ ] Template explore page
+- [ ] Template details page
+- [ ] Reviews and ratings
+- [ ] Analytics dashboard
+- [ ] Auto tagging

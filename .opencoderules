@@ -1,0 +1,55 @@
+# PromptPilot AI — OpenCode Rules
+
+## Project Structure
+- Monorepo with `frontend/` (Next.js 15) and `backend/` (Express.js)
+- All source code in TypeScript (strict mode)
+- No Mongoose — use native MongoDB driver only
+- No placeholder/dummy content — use real DB data or show empty states
+
+## Tech Stack
+- **Frontend**: Next.js 15 App Router, TypeScript, Tailwind CSS, TanStack Query v5, Recharts, Better Auth, Gravity UI Icons
+- **Backend**: Node.js, Express.js, TypeScript, MongoDB native driver, Zod, Better Auth
+- **AI**: Gemini 1.5 Flash (analyzer, optimizer, variants, scorer, recommender), Groq (chat assistant, auto-tagger)
+
+## Code Conventions
+- Use functional components with named exports
+- Use `import type` for type-only imports
+- API client functions: typed request/response interfaces, error handling wrapper
+- Backend controllers are thin — delegate logic to services
+- Use Zod for all request validation (backend) and form validation (frontend)
+- Use TanStack Query for all server state (no Redux, no Zustand)
+- Authentication: Better Auth with HTTP-only cookies (frontend calls `/api/auth/*`)
+- AI provider keys stored in backend `.env` only, never exposed to frontend
+
+## Design System
+- 3 primary colors only: Indigo (#4F46E5), Emerald (#10B981), Amber (#F59E0B)
+- Neutral: Slate/Zinc/Gray palette
+- Font: Plus Jakarta Sans
+- All cards: same height, width, border-radius, layout
+- Responsive breakpoints: 4 cols (desktop), 2 cols (tablet), 1 col (mobile)
+
+## Key Decisions
+- **Better Auth v1** (latest)
+- **AI provider fallback**: Try primary, fall back to secondary on failure
+- **npm** for package management
+- **Chat streaming**: Express SSE directly (no Next.js proxy)
+- **DB setup**: Auto-create collections + indexes on backend startup
+
+## AI Agent Workflow
+The orchestrator runs agents in sequence:
+Planner → Analyzer → Context Checker → Weakness Detector → Follow-up Questions → Optimizer → Variant Generator → Quality Evaluator → Recommender → Save
+
+## File Naming
+- Backend: `*.service.ts`, `*.controller.ts`, `*.routes.ts`, `*.middleware.ts`, `*.validator.ts`, `*.model.ts`, `*.prompt.ts`
+- Frontend: `*.tsx` for components/pages, `*.ts` for hooks/services/types, `use*` prefix for hooks
+- kebab-case for directories, camelCase for files, PascalCase for components
+
+## Error Handling
+- Every API endpoint returns `{ success: boolean, data?: T, error?: string }`
+- Frontend: ErrorState component with retry button on all data-driven pages
+- Loading: Skeleton loaders on all data-driven pages
+- Empty: EmptyState component with contextual message on all list pages
+
+## Git
+- No commits unless explicitly asked
+- Conventional commit messages (feat:, fix:, chore:, docs:)

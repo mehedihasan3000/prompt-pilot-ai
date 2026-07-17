@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { getAuthToken } from '@/lib/api';
-import type { ChatMessage, ChatResponse } from '@/types/ai.types';
+import { sendChatMessage } from '@/services/api/ai';
+import type { ChatMessage } from '@/types/ai.types';
 
 interface UseChatReturn {
   messages: ChatMessage[];
@@ -38,26 +38,16 @@ export function useChat(): UseChatReturn {
         content: m.content,
       }));
 
-      const token = getAuthToken();
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      if (token) headers['x-user-id'] = token;
+      const res = await sendChatMessage({ message: content, conversationHistory });
 
-      const res = await fetch('/api/ai/chat', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ message: content, conversationHistory }),
-      });
-
-      if (!res.ok) {
-        throw new Error(res.status === 401 ? 'Authentication required' : 'Failed to send message');
+      if (!res.success || !res.data) {
+        throw new Error(res.error || 'Failed to send message');
       }
-
-      const data: ChatResponse = await res.json();
 
       const assistantMessage: ChatMessage = {
         id: `msg-${Date.now()}`,
         role: 'assistant',
-        content: data.reply,
+        content: res.data.reply,
         createdAt: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, assistantMessage]);

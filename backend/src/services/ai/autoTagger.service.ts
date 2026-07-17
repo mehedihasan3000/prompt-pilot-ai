@@ -1,4 +1,4 @@
-import { callGroq } from './ai.utils';
+import { callAi } from './ai.utils';
 
 export interface AutoTaggerInput {
   originalPrompt: string;
@@ -43,7 +43,7 @@ Return a JSON object exactly:
 
 Pick tags only from the available list. Choose the closest match for category.`;
 
-    const result = await callGroq<AutoTaggerResult>({ prompt, systemPrompt, temperature: 0.2 });
+    const result = await callAi<AutoTaggerResult>({ prompt, systemPrompt, temperature: 0.2 });
     return {
       tags: Array.isArray(result.tags) ? result.tags.filter(t => ALL_TAGS.includes(t)) : FALLBACK.tags,
       category: result.category || FALLBACK.category,

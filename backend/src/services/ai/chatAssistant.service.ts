@@ -1,5 +1,5 @@
-import { callGroq } from './ai.utils';
-import { buildChatMessages } from '../../prompts/chat.prompt';
+import { callAi } from './ai.utils';
+import { getChatSystemPrompt } from '../../prompts/chat.prompt';
 
 export interface ChatAssistantInput {
   message: string;
@@ -18,11 +18,20 @@ const FALLBACK: ChatAssistantResult = {
 
 export async function chat(input: ChatAssistantInput): Promise<ChatAssistantResult> {
   try {
-    const messages = buildChatMessages(input);
-    const completion = await callGroq<ChatAssistantResult>({
-      prompt: input.message,
-      systemPrompt: messages.find(m => m.role === 'system')?.content || '',
-      messages,
+    const systemPrompt = getChatSystemPrompt();
+
+    let conversationText = '';
+    if (input.conversationHistory) {
+      for (const msg of input.conversationHistory) {
+        const role = msg.role === 'user' ? 'User' : 'Assistant';
+        conversationText += `${role}: ${msg.content}\n\n`;
+      }
+    }
+    conversationText += `User: ${input.message}`;
+
+    const completion = await callAi<ChatAssistantResult>({
+      prompt: conversationText,
+      systemPrompt,
       temperature: 0.7,
       maxTokens: 1024,
     });

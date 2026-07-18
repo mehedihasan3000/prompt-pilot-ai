@@ -23,7 +23,6 @@ import { OptimizedPrompt } from '@/components/ai/OptimizedPrompt';
 import { VariantCard } from '@/components/ai/VariantCard';
 import { ScoreRing } from '@/components/ai/ScoreRing';
 import { Navbar } from '@/components/layout/Navbar';
-import { Footer } from '@/components/layout/Footer';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -445,7 +444,6 @@ export default function WorkspacePage() {
         </main>
       </div>
 
-      <Footer />
     </div>
     </ProtectedRoute>
   );

@@ -5,16 +5,12 @@ let client: MongoClient;
 let db: Db;
 
 export async function connectDB(): Promise<Db> {
-  try {
-    client = new MongoClient(env.MONGODB_URI);
-    await client.connect();
-    db = client.db(env.DATABASE_NAME);
-    console.log(`Connected to MongoDB: ${env.DATABASE_NAME}`);
-    return db;
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-    process.exit(1);
-  }
+  if (db) return db;
+  client = new MongoClient(env.MONGODB_URI);
+  await client.connect();
+  db = client.db(env.DATABASE_NAME);
+  console.log(`Connected to MongoDB: ${env.DATABASE_NAME}`);
+  return db;
 }
 
 export function getDb(): Db {

@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { env } from './config/env';
+import { connectDB } from './config/db';
+import { initializeDatabase } from './config/init-db';
 import { errorHandler } from './middlewares/error.middleware';
 import { generalRateLimit } from './middlewares/rateLimit.middleware';
 
@@ -21,6 +23,21 @@ app.use(helmet());
 app.use(cors({ origin: env.BETTER_AUTH_URL, credentials: true }));
 app.use(express.json());
 app.use(generalRateLimit);
+
+let dbInitialized = false;
+
+app.use(async (req, res, next) => {
+  if (!dbInitialized) {
+    try {
+      await connectDB();
+      await initializeDatabase();
+      dbInitialized = true;
+    } catch (err) {
+      return next(err);
+    }
+  }
+  next();
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

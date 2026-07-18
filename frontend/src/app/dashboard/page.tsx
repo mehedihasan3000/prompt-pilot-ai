@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { FileText, TrendingUp, BookOpen, Heart, Cpu, Folder, ArrowRight, Clock } from 'lucide-react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
-import { Footer } from '@/components/layout/Footer';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
@@ -272,7 +271,6 @@ export default function DashboardPage() {
         </main>
       </div>
 
-      <Footer />
     </div>
     </ProtectedRoute>
   );

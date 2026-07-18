@@ -8,7 +8,7 @@ interface UseChatReturn {
   messages: ChatMessage[];
   isSending: boolean;
   error: string | null;
-  sendMessage: (content: string) => Promise<void>;
+  sendMessage: (content: string, conversationId?: string | null) => Promise<void>;
   clearMessages: () => void;
   setMessages: (messages: ChatMessage[]) => void;
 }
@@ -18,7 +18,7 @@ export function useChat(): UseChatReturn {
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const sendMessage = useCallback(async (content: string) => {
+  const sendMessage = useCallback(async (content: string, conversationId?: string | null) => {
     if (!content.trim()) return;
 
     setIsSending(true);
@@ -38,7 +38,8 @@ export function useChat(): UseChatReturn {
         content: m.content,
       }));
 
-      const res = await sendChatMessage({ message: content, conversationHistory });
+      const cId = conversationId || undefined;
+      const res = await sendChatMessage({ message: content, conversationHistory, conversationId: cId });
 
       if (!res.success || !res.data) {
         throw new Error(res.error || 'Failed to send message');

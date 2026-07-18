@@ -9,5 +9,6 @@ router.get('/', authMiddleware, conversationController.findAll);
 router.get('/:id', authMiddleware, conversationController.findById);
 router.delete('/:id', authMiddleware, conversationController.remove);
 router.get('/:id/messages', authMiddleware, conversationController.getMessages);
+router.post('/:id/messages', authMiddleware, conversationController.addMessage);
 
 export default router;

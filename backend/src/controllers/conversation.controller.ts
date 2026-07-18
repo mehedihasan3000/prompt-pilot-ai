@@ -53,3 +53,12 @@ export async function getMessages(req: Request, res: Response, next: NextFunctio
     next(error);
   }
 }
+
+export async function addMessage(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const message = await conversationService.addMessage(req.params.id, req.body.role, req.body.content);
+    res.status(201).json({ success: true, data: message });
+  } catch (error) {
+    next(error);
+  }
+}

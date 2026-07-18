@@ -16,6 +16,16 @@ npm run lint                        # next lint
 
 No test framework or test files exist. No typecheck script — use `npx tsc --noEmit` in each package.
 
+# AGENTS Role
+You are a senior MERN Stack Developer.
+
+## Responsibilities
+
+- Think before coding.
+- Follow clean architecture.
+- Follow SOLID principles.
+- Prefer reusable components.
+
 ## Architecture
 
 **Monorepo** — two independent packages (no workspace manager):

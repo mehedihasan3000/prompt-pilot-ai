@@ -17,12 +17,11 @@ import { ChatBubble } from '@/components/ai/ChatBubble';
 import { ChatInput } from '@/components/ai/ChatInput';
 import { TypingIndicator } from '@/components/ai/TypingIndicator';
 import { Button } from '@/components/ui/Button';
-import { Skeleton, SkeletonRow } from '@/components/ui/Skeleton';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
-import { Footer } from '@/components/layout/Footer';
 import {
   getConversations,
   createConversation,
@@ -44,12 +43,12 @@ const DEFAULT_FOLLOW_UPS = [
 export default function AssistantPage() {
   const router = useRouter();
   const { data: user, isLoading: authLoading } = useCurrentUser();
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const { messages, isSending, error: chatError, sendMessage, clearMessages, setMessages } = useChat();
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [conversationsLoading, setConversationsLoading] = useState(true);
   const [conversationsError, setConversationsError] = useState<string | null>(null);
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [showMobileList, setShowMobileList] = useState(false);
   const [suggestedFollowUps, setSuggestedFollowUps] = useState<string[]>(DEFAULT_FOLLOW_UPS);
@@ -140,11 +139,22 @@ export default function AssistantPage() {
   );
 
   const handleSend = useCallback(
-    (content: string) => {
-      sendMessage(content);
+    async (content: string) => {
+      let id = activeConversationId;
+      if (!id) {
+        const res = await createConversation();
+        if (res.success && res.data) {
+          id = res.data.id;
+          setConversations((prev) => [res.data!, ...prev]);
+          setActiveConversationId(id);
+        } else {
+          return;
+        }
+      }
       setSuggestedFollowUps([]);
+      sendMessage(content, id);
     },
-    [sendMessage]
+    [activeConversationId, sendMessage]
   );
 
   const handleSelectFollowUp = useCallback(
@@ -231,11 +241,11 @@ export default function AssistantPage() {
 
                 {!conversationsLoading && !conversationsError && conversations.length > 0 && (
                   <div className="space-y-0.5 p-2">
-                    {conversations.map((conv) => (
-                      <button
+                      {conversations.map((conv) => (
+                      <div
                         key={conv.id}
                         onClick={() => handleSelectConversation(conv.id)}
-                        className={`group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
+                        className={`group flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
                           activeConversationId === conv.id
                             ? 'bg-indigo-50 text-indigo-700'
                             : 'text-slate-700 hover:bg-slate-100'
@@ -254,7 +264,7 @@ export default function AssistantPage() {
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 )}

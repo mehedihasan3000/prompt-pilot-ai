@@ -7,6 +7,7 @@ import * as recommenderService from '../services/ai/recommender.service';
 import * as chatAssistantService from '../services/ai/chatAssistant.service';
 import * as autoTaggerService from '../services/ai/autoTagger.service';
 import * as orchestratorService from '../services/ai/orchestrator.service';
+import * as conversationService from '../services/conversation.service';
 
 export async function analyze(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
@@ -55,7 +56,18 @@ export async function recommend(req: Request, res: Response, next: NextFunction)
 
 export async function chat(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const result = await chatAssistantService.chat(req.body);
+    const { conversationId, message, conversationHistory } = req.body;
+
+    if (conversationId) {
+      await conversationService.addMessage(conversationId, 'user', message);
+    }
+
+    const result = await chatAssistantService.chat({ message, conversationHistory });
+
+    if (conversationId) {
+      await conversationService.addMessage(conversationId, 'assistant', result.reply);
+    }
+
     res.json({ success: true, data: result });
   } catch (error) {
     next(error);

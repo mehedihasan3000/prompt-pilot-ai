@@ -13,6 +13,7 @@ import { ErrorState } from '@/components/ui/ErrorState';
 import { Modal } from '@/components/ui/Modal';
 import { ScoreRing } from '@/components/ai/ScoreRing';
 import { toast } from '@/components/ui/Toast';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useCurrentUser } from '@/hooks/useAuth';
 import { usePrompt, useDeletePrompt, useToggleFavorite } from '@/hooks/usePrompts';
 import { analyzePrompt } from '@/services/api/ai';
@@ -116,16 +117,6 @@ export default function PromptDetailPage() {
     }
   }, [prompt, refetch]);
 
-  if (!authLoading && !user) {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6 lg:px-8">
-        <h1 className="mb-4 text-2xl font-bold text-slate-900">Sign in required</h1>
-        <p className="mb-6 text-slate-500">You need to be signed in to view prompt details.</p>
-        <Button onClick={() => router.push('/login')}>Sign In</Button>
-      </div>
-    );
-  }
-
   if (isLoading) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
@@ -161,6 +152,7 @@ export default function PromptDetailPage() {
     : [];
 
   return (
+    <ProtectedRoute>
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <button
         onClick={() => router.push('/history')}
@@ -382,5 +374,6 @@ export default function PromptDetailPage() {
         </p>
       </Modal>
     </div>
+    </ProtectedRoute>
   );
 }

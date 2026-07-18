@@ -39,7 +39,7 @@ Apply prompt engineering best practices and optimize for ${input.targetModel}.`;
     return {
       optimizedPrompt: result.optimizedPrompt || input.originalPrompt,
       explanation: result.explanation || 'Optimization applied.',
-      changesMade: Array.isArray(result.changesMade) ? result.changesMade : [],
+      changesMade: Array.isArray(result.changesMade) ? result.changesMade.filter((c): c is string => typeof c === 'string') : [],
     };
   } catch {
     return {

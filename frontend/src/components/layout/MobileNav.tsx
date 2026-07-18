@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { X } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useCurrentUser } from '@/hooks/useAuth';
 
 interface MobileNavProps {
   isOpen: boolean;
   onClose: () => void;
-  isLoggedIn: boolean;
 }
 
 const publicLinks = [
@@ -25,8 +25,10 @@ const authLinks = [
   { href: '/analytics', label: 'Analytics' },
 ] as const;
 
-export function MobileNav({ isOpen, onClose, isLoggedIn }: MobileNavProps) {
+export function MobileNav({ isOpen, onClose }: MobileNavProps) {
   const pathname = usePathname();
+  const { data: user } = useCurrentUser();
+  const isLoggedIn = !!user;
 
   useEffect(() => {
     if (isOpen) {

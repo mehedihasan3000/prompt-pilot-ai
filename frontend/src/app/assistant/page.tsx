@@ -12,6 +12,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { useChat } from '@/hooks/useChat';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useCurrentUser } from '@/hooks/useAuth';
 import { ChatBubble } from '@/components/ai/ChatBubble';
 import { ChatInput } from '@/components/ai/ChatInput';
@@ -80,12 +81,6 @@ export default function AssistantPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isSending]);
-
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/login');
-    }
-  }, [authLoading, user, router]);
 
   const handleNewChat = useCallback(async () => {
     setIsCreating(true);
@@ -175,17 +170,8 @@ export default function AssistantPage() {
 
   const showTyping = isSending && messages[messages.length - 1]?.role === 'user';
 
-  if (authLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-primary-600" />
-      </div>
-    );
-  }
-
-  if (!user) return null;
-
   return (
+    <ProtectedRoute>
     <div className="min-h-screen bg-slate-50">
       <Navbar />
       <div className="flex">
@@ -387,5 +373,6 @@ export default function AssistantPage() {
         </main>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

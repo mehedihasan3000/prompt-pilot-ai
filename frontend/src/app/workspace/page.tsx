@@ -28,6 +28,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { toast } from '@/components/ui/Toast';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { apiFetch } from '@/lib/api';
 import { analyzePrompt } from '@/services/api/ai';
 import type { AnalyzeInput } from '@/services/api/ai';
@@ -168,6 +169,7 @@ export default function WorkspacePage() {
   };
 
   return (
+    <ProtectedRoute>
     <div className="min-h-screen bg-slate-50">
       <Navbar />
 
@@ -261,7 +263,7 @@ export default function WorkspacePage() {
                               <span className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary-100 text-xs font-medium text-primary-700">
                                 {i + 1}
                               </span>
-                              <p className="text-sm text-slate-700">{q}</p>
+                              <p className="text-sm text-slate-700">{typeof q === 'string' ? q : JSON.stringify(q)}</p>
                             </div>
                           ))}
                         </div>
@@ -321,7 +323,7 @@ export default function WorkspacePage() {
                     <CollapsibleSection title="Auto Tags" icon={Tag}>
                       <div className="flex flex-wrap gap-2">
                         {result.autoTags.tags.map((tag, i) => (
-                          <Badge key={i} variant="default">{tag}</Badge>
+                          <Badge key={i} variant="default">{typeof tag === 'string' ? tag : JSON.stringify(tag)}</Badge>
                         ))}
                         <Badge variant="success">{result.autoTags.category}</Badge>
                       </div>
@@ -370,5 +372,6 @@ export default function WorkspacePage() {
 
       <Footer />
     </div>
+    </ProtectedRoute>
   );
 }

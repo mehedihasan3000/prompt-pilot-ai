@@ -5,14 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, User, LogOut, LayoutDashboard } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useCurrentUser, useLogout } from '@/hooks/useAuth';
 import { MobileNav } from './MobileNav';
-
-interface NavbarProps {
-  isLoggedIn?: boolean;
-  userName?: string;
-  userImage?: string;
-  onLogout?: () => void;
-}
 
 const publicLinks = [
   { href: '/', label: 'Home' },
@@ -26,15 +20,14 @@ const authLinks = [
   { href: '/analytics', label: 'Analytics' },
 ] as const;
 
-export function Navbar({
-  isLoggedIn = false,
-  userName,
-  userImage,
-  onLogout,
-}: NavbarProps) {
+export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
+  const { data: user } = useCurrentUser();
+  const logoutMutation = useLogout();
+
+  const isLoggedIn = !!user;
 
   const links = isLoggedIn
     ? [...publicLinks, ...authLinks]
@@ -76,18 +69,18 @@ export function Navbar({
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center gap-2 rounded-lg p-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100"
                 >
-                  {userImage ? (
+                  {user?.image ? (
                     <img
-                      src={userImage}
-                      alt={userName || 'User'}
+                      src={user.image}
+                      alt={user.name || 'User'}
                       className="h-8 w-8 rounded-full object-cover"
                     />
                   ) : (
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-700">
-                      {(userName || 'U').charAt(0).toUpperCase()}
+                      {(user?.name || 'U').charAt(0).toUpperCase()}
                     </div>
                   )}
-                  <span className="hidden xl:block">{userName || 'User'}</span>
+                  <span className="hidden xl:block">{user?.name || 'User'}</span>
                 </button>
                 {dropdownOpen && (
                   <>
@@ -97,7 +90,7 @@ export function Navbar({
                     />
                     <div className="absolute right-0 z-20 mt-2 w-56 rounded-xl border border-slate-200 bg-white py-2 shadow-lg">
                       <div className="border-b border-slate-100 px-4 py-2">
-                        <p className="text-sm font-medium text-slate-900">{userName || 'User'}</p>
+                        <p className="text-sm font-medium text-slate-900">{user?.name || 'User'}</p>
                       </div>
                       <Link
                         href="/dashboard"
@@ -118,7 +111,7 @@ export function Navbar({
                       <button
                         onClick={() => {
                           setDropdownOpen(false);
-                          onLogout?.();
+                          logoutMutation.mutate();
                         }}
                         className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                       >
@@ -159,7 +152,6 @@ export function Navbar({
       <MobileNav
         isOpen={mobileOpen}
         onClose={() => setMobileOpen(false)}
-        isLoggedIn={isLoggedIn}
       />
     </>
   );

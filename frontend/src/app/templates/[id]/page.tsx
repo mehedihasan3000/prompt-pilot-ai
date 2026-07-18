@@ -14,6 +14,7 @@ import { SkeletonCard } from '@/components/ui/Skeleton';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { toast } from '@/components/ui/Toast';
 import { useTemplate } from '@/hooks/useTemplates';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useCurrentUser } from '@/hooks/useAuth';
 import { TemplateCard } from '@/components/cards/TemplateCard';
 import { getTemplates, incrementTemplateUsage } from '@/services/api/templates';
@@ -142,6 +143,7 @@ export default function TemplateDetailPage() {
   }
 
   return (
+    <ProtectedRoute>
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <button
         onClick={() => router.back()}
@@ -339,5 +341,6 @@ export default function TemplateDetailPage() {
         </div>
       )}
     </div>
+    </ProtectedRoute>
   );
 }

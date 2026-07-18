@@ -17,3 +17,8 @@ export interface Session {
     token: string;
   };
 }
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+}

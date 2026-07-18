@@ -14,6 +14,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { Modal } from '@/components/ui/Modal';
 import { toast } from '@/components/ui/Toast';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useCurrentUser } from '@/hooks/useAuth';
 import {
   useCollections,
@@ -164,16 +165,6 @@ export default function CollectionsPage() {
     }
   }, [expandedId, refetch]);
 
-  if (!authLoading && !user) {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6 lg:px-8">
-        <h1 className="mb-4 text-2xl font-bold text-slate-900">Sign in required</h1>
-        <p className="mb-6 text-slate-500">You need to be signed in to manage collections.</p>
-        <Button onClick={() => router.push('/login')}>Sign In</Button>
-      </div>
-    );
-  }
-
   if (isLoading) {
     return (
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
@@ -198,6 +189,7 @@ export default function CollectionsPage() {
   }
 
   return (
+    <ProtectedRoute>
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
@@ -451,5 +443,6 @@ export default function CollectionsPage() {
         </p>
       </Modal>
     </div>
+    </ProtectedRoute>
   );
 }

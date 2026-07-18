@@ -7,6 +7,7 @@ import { Eye, EyeOff, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { toast } from '@/components/ui/Toast';
+import { setAuthToken } from '@/lib/api';
 import * as authApi from '@/services/api/auth';
 
 export default function RegisterPage() {
@@ -55,6 +56,7 @@ export default function RegisterPage() {
     try {
       const result = await authApi.register(form.name, form.email, form.password, form.confirmPassword);
       if (result.success) {
+        setAuthToken(result.data!.token);
         toast('Account created successfully!', 'success');
         router.push('/dashboard');
       } else {

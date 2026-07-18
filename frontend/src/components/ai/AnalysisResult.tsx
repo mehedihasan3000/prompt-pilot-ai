@@ -35,7 +35,7 @@ export function AnalysisResult({ result }: AnalysisResultProps) {
           </h4>
           <div className="flex flex-wrap gap-2">
             {result.strengths.map((strength, i) => (
-              <Badge key={i} variant="success">{strength}</Badge>
+              <Badge key={i} variant="success">{typeof strength === 'string' ? strength : JSON.stringify(strength)}</Badge>
             ))}
           </div>
         </div>
@@ -49,7 +49,7 @@ export function AnalysisResult({ result }: AnalysisResultProps) {
           </h4>
           <div className="flex flex-wrap gap-2">
             {result.weaknesses.map((weakness, i) => (
-              <Badge key={i} variant="warning">{weakness}</Badge>
+              <Badge key={i} variant="warning">{typeof weakness === 'string' ? weakness : JSON.stringify(weakness)}</Badge>
             ))}
           </div>
         </div>
@@ -65,7 +65,7 @@ export function AnalysisResult({ result }: AnalysisResultProps) {
             {result.missingContext.map((item, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
                 <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-slate-400" />
-                {item}
+                {typeof item === 'string' ? item : JSON.stringify(item)}
               </li>
             ))}
           </ul>

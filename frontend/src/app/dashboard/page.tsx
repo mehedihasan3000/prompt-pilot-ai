@@ -14,6 +14,7 @@ import { ScoreOverTimeChart } from '@/components/charts/ScoreOverTimeChart';
 import { PromptsPerWeekChart } from '@/components/charts/PromptsPerWeekChart';
 import { CategoryPieChart } from '@/components/charts/CategoryPieChart';
 import { ModelBarChart } from '@/components/charts/ModelBarChart';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useCurrentUser } from '@/hooks/useAuth';
 import {
   useAnalyticsSummary,
@@ -78,16 +79,6 @@ export default function DashboardPage() {
   const scoreTrends = useScoreTrends();
   const recentActivity = useRecentActivity();
 
-  if (!authLoading && !user) {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6 lg:px-8">
-        <h1 className="mb-4 text-2xl font-bold text-slate-900">Sign in required</h1>
-        <p className="mb-6 text-slate-500">You need to be signed in to view the dashboard.</p>
-        <Button onClick={() => router.push('/login')}>Sign In</Button>
-      </div>
-    );
-  }
-
   const isLoading = summary.isLoading || promptsOverTime.isLoading || categoryUsage.isLoading || modelUsage.isLoading || scoreTrends.isLoading || recentActivity.isLoading;
   const isError = summary.isError || promptsOverTime.isError || categoryUsage.isError || modelUsage.isError || scoreTrends.isError || recentActivity.isError;
   const refetchAll = () => {
@@ -102,7 +93,8 @@ export default function DashboardPage() {
   const hasData = summary.data && summary.data.totalPrompts > 0;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-slate-50">
       <Navbar />
 
       <div className="flex">
@@ -282,5 +274,6 @@ export default function DashboardPage() {
 
       <Footer />
     </div>
+    </ProtectedRoute>
   );
 }

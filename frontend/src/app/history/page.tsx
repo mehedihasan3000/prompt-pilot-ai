@@ -11,6 +11,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { Modal } from '@/components/ui/Modal';
 import { toast } from '@/components/ui/Toast';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useCurrentUser } from '@/hooks/useAuth';
 import { usePrompts, useDeletePrompt, useToggleFavorite } from '@/hooks/usePrompts';
 import type { Prompt } from '@/types/prompt.types';
@@ -91,16 +92,6 @@ export default function HistoryPage() {
     }
   }, [toggleFavoriteMutation]);
 
-  if (!authLoading && !user) {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6 lg:px-8">
-        <h1 className="mb-4 text-2xl font-bold text-slate-900">Sign in required</h1>
-        <p className="mb-6 text-slate-500">You need to be signed in to view history.</p>
-        <Button onClick={() => router.push('/login')}>Sign In</Button>
-      </div>
-    );
-  }
-
   function getScoreColor(score?: number) {
     if (!score) return 'text-slate-400';
     if (score >= 80) return 'text-green-600 bg-green-50';
@@ -109,6 +100,7 @@ export default function HistoryPage() {
   }
 
   return (
+    <ProtectedRoute>
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">Prompt History</h1>
@@ -313,5 +305,6 @@ export default function HistoryPage() {
         </p>
       </Modal>
     </div>
+    </ProtectedRoute>
   );
 }

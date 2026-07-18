@@ -39,7 +39,12 @@ export async function generateVariants(input: VariantGeneratorInput): Promise<Va
 
     const result = await callAi<VariantGeneratorResult>({ prompt, systemPrompt, temperature: 0.6 });
     if (Array.isArray(result.variants) && result.variants.length > 0) {
-      return result;
+      return {
+        variants: result.variants.map(v => ({
+          type: typeof v.type === 'string' ? v.type : 'Variant',
+          content: typeof v.content === 'string' ? v.content : '',
+        })),
+      };
     }
     return FALLBACK;
   } catch {

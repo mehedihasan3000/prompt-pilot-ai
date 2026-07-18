@@ -71,7 +71,7 @@ export function OptimizedPrompt({ prompt, explanation, changesMade, onCopy }: Op
             {changesMade.map((change, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
                 <ArrowRight className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-primary-500" />
-                {change}
+                {typeof change === 'string' ? change : JSON.stringify(change)}
               </li>
             ))}
           </ul>

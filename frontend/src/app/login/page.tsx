@@ -7,6 +7,7 @@ import { Eye, EyeOff, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { toast } from '@/components/ui/Toast';
+import { setAuthToken } from '@/lib/api';
 import * as authApi from '@/services/api/auth';
 
 export default function LoginPage() {
@@ -42,6 +43,7 @@ export default function LoginPage() {
     try {
       const result = await authApi.login(form.email, form.password);
       if (result.success) {
+        setAuthToken(result.data!.token);
         toast('Logged in successfully!', 'success');
         router.push('/dashboard');
       } else {
@@ -60,6 +62,7 @@ export default function LoginPage() {
     try {
       const result = await authApi.demoLogin();
       if (result.success) {
+        setAuthToken(result.data!.token);
         toast('Logged in with demo account!', 'success');
         router.push('/dashboard');
       } else {

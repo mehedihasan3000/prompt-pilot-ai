@@ -59,9 +59,9 @@ Evaluate each criterion on a scale of 0-100 and provide specific strengths, weak
       constraints: Math.min(100, Math.max(0, result.constraints ?? 50)),
       outputFormat: Math.min(100, Math.max(0, result.outputFormat ?? 50)),
       toneAlignment: Math.min(100, Math.max(0, result.toneAlignment ?? 50)),
-      strengths: Array.isArray(result.strengths) ? result.strengths : FALLBACK.strengths,
-      weaknesses: Array.isArray(result.weaknesses) ? result.weaknesses : FALLBACK.weaknesses,
-      missingContext: Array.isArray(result.missingContext) ? result.missingContext : [],
+      strengths: Array.isArray(result.strengths) ? result.strengths.filter((s): s is string => typeof s === 'string') : FALLBACK.strengths,
+      weaknesses: Array.isArray(result.weaknesses) ? result.weaknesses.filter((w): w is string => typeof w === 'string') : FALLBACK.weaknesses,
+      missingContext: Array.isArray(result.missingContext) ? result.missingContext.filter((m): m is string => typeof m === 'string') : [],
       analysis: result.analysis || FALLBACK.analysis,
     };
   } catch {

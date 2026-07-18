@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import * as authApi from '@/services/api/auth';
 import { setAuthToken, clearAuthToken } from '@/lib/api';
-import type { User } from '@/types/user.types';
+import type { User, AuthResponse } from '@/types/user.types';
 
 export function useCurrentUser() {
   return useQuery({
@@ -30,7 +30,7 @@ export function useLogin() {
       authApi.login(email, password),
     onSuccess: (result) => {
       if (result.success && result.data) {
-        const token = (result.data as any).token;
+        const token = result.data.token;
         if (token) setAuthToken(token);
         queryClient.invalidateQueries({ queryKey: ['auth'] });
         router.push('/dashboard');
@@ -48,7 +48,7 @@ export function useRegister() {
       authApi.register(name, email, password, confirmPassword),
     onSuccess: (result) => {
       if (result.success && result.data) {
-        const token = (result.data as any).token;
+        const token = result.data.token;
         if (token) setAuthToken(token);
         queryClient.invalidateQueries({ queryKey: ['auth'] });
         router.push('/dashboard');

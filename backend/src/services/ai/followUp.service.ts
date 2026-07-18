@@ -36,7 +36,9 @@ Return a JSON object exactly:
 
     const result = await callAi<FollowUpResult>({ prompt, systemPrompt, temperature: 0.4 });
     return {
-      questions: Array.isArray(result.questions) ? result.questions : FALLBACK.questions,
+      questions: Array.isArray(result.questions)
+        ? result.questions.filter((q): q is string => typeof q === 'string')
+        : FALLBACK.questions,
     };
   } catch {
     return FALLBACK;

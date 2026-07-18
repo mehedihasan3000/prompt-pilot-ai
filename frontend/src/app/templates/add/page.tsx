@@ -9,6 +9,7 @@ import { Select } from '@/components/ui/Select';
 import { Textarea } from '@/components/ui/Textarea';
 import { toast } from '@/components/ui/Toast';
 import { TemplateCard } from '@/components/cards/TemplateCard';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useCurrentUser } from '@/hooks/useAuth';
 import { createTemplate } from '@/services/api/templates';
 import type { Template, CreateTemplatePayload } from '@/types/template.types';
@@ -109,16 +110,6 @@ export default function AddTemplatePage() {
     updatedAt: new Date().toISOString(),
   };
 
-  if (!authLoading && !user) {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6 lg:px-8">
-        <h1 className="mb-4 text-2xl font-bold text-slate-900">Sign in required</h1>
-        <p className="mb-6 text-slate-500">You need to be signed in to create a template.</p>
-        <Button onClick={() => router.push('/login')}>Sign In</Button>
-      </div>
-    );
-  }
-
   function validate() {
     const newErrors: Record<string, string> = {};
     if (!form.title.trim()) newErrors.title = 'Title is required';
@@ -183,6 +174,7 @@ export default function AddTemplatePage() {
   };
 
   return (
+    <ProtectedRoute>
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">Create Template</h1>
@@ -334,5 +326,6 @@ export default function AddTemplatePage() {
         </form>
       )}
     </div>
+    </ProtectedRoute>
   );
 }

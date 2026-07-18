@@ -52,6 +52,15 @@ async function apiFetch<T>(
       ...options,
     });
 
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      const text = await response.text();
+      return {
+        success: false,
+        error: `The server encountered an error (${response.status}). Please try again.`,
+      };
+    }
+
     const data = await response.json();
 
     if (!response.ok) {

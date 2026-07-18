@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Zap,
   Search,
@@ -32,6 +33,9 @@ import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/Button';
 import { SkeletonCard } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { TemplateCard } from '@/components/cards/TemplateCard';
+import { useTemplates } from '@/hooks/useTemplates';
+import type { Template } from '@/types/template.types';
 
 const features = [
   {
@@ -168,28 +172,6 @@ function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: str
   );
 }
 
-function TemplateCard({ template }: { template: { id: string; title: string; description: string; category: string } }) {
-  return (
-    <div className="group rounded-xl border border-slate-200 bg-white p-6 transition-all hover:border-primary-200 hover:shadow-md">
-      <div className="mb-3">
-        <span className="inline-block rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary-700">
-          {template.category}
-        </span>
-      </div>
-      <h3 className="mb-2 text-lg font-semibold text-slate-900 group-hover:text-primary-600">
-        {template.title}
-      </h3>
-      <p className="mb-4 text-sm text-slate-500 line-clamp-2">{template.description}</p>
-      <Link
-        href={`/explore/${template.id}`}
-        className="inline-flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700"
-      >
-        Use Template <ArrowRight className="h-3.5 w-3.5" />
-      </Link>
-    </div>
-  );
-}
-
 function TestimonialCard({ review }: { review: { id: string; name: string; role?: string; content: string; rating: number } }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-6">
@@ -216,36 +198,32 @@ function TestimonialCard({ review }: { review: { id: string; name: string; role?
 }
 
 export default function HomePage() {
+  const router = useRouter();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterLoading, setNewsletterLoading] = useState(false);
   const [newsletterMessage, setNewsletterMessage] = useState<string | null>(null);
   const [beforeAfter, setBeforeAfter] = useState(false);
 
-  const [templates, setTemplates] = useState<any[]>([]);
-  const [templatesLoading, setTemplatesLoading] = useState(true);
+  const { data: templatesData, isLoading: templatesLoading } = useTemplates({ sort: 'usageCount', limit: 4 });
+  const templates: Template[] = templatesData?.templates || [];
   const [testimonials, setTestimonials] = useState<any[]>([]);
   const [testimonialsLoading, setTestimonialsLoading] = useState(true);
+
+  const handleViewTemplate = useCallback((id: string) => {
+    router.push(`/templates/${id}`);
+  }, [router]);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const [templatesRes, reviewsRes] = await Promise.all([
-          fetch('/api/templates?limit=4&sort=usageCount'),
-          fetch('/api/reviews'),
-        ]);
-        const templatesData = await templatesRes.json();
-        const reviewsData = await reviewsRes.json();
-
-        if (templatesData.success && templatesData.data?.templates) {
-          setTemplates(templatesData.data.templates);
-        }
-        if (reviewsData.success && reviewsData.data) {
-          setTestimonials(reviewsData.data);
+        const res = await fetch('/api/reviews');
+        const data = await res.json();
+        if (data.success && data.data) {
+          setTestimonials(data.data);
         }
       } catch {
       } finally {
-        setTemplatesLoading(false);
         setTestimonialsLoading(false);
       }
     }
@@ -489,7 +467,7 @@ export default function HomePage() {
               {templatesLoading ? (
                 Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
               ) : templates.length > 0 ? (
-                templates.map((t: any) => <TemplateCard key={t.id} template={t} />)
+                templates.map((t: Template) => <TemplateCard key={t.id} template={t} onView={handleViewTemplate} />)
               ) : (
                 <div className="col-span-full">
                   <EmptyState

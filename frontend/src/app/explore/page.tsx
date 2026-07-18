@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, Layers, SlidersHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Search, Layers, SlidersHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Select';
 import { SkeletonCard } from '@/components/ui/Skeleton';
@@ -120,6 +120,12 @@ function ExploreContent() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">
+        <div className="mb-1 flex items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={() => router.push('/')}>
+            <ArrowLeft className="h-4 w-4" />
+            Home
+          </Button>
+        </div>
         <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">Explore Templates</h1>
         <p className="mt-1 text-sm text-slate-500">
           Discover prompt templates created by the community.

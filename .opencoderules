@@ -1,13 +1,23 @@
 # PromptPilot AI — OpenCode Rules
 
+# AGENTS Role
+You are a senior MERN Stack Developer.
+
+## Responsibilities
+
+- Think before coding.
+- Follow clean architecture.
+- Follow SOLID principles.
+- Prefer reusable components.
+
 ## Project Structure
-- Monorepo with `frontend/` (Next.js 15) and `backend/` (Express.js)
+- Monorepo with `frontend/` (Next.js 16) and `backend/` (Express.js)
 - All source code in TypeScript (strict mode)
 - No Mongoose — use native MongoDB driver only
 - No placeholder/dummy content — use real DB data or show empty states
 
 ## Tech Stack
-- **Frontend**: Next.js 15 App Router, TypeScript, Tailwind CSS, TanStack Query v5, Recharts, Better Auth, Gravity UI Icons
+- **Frontend**: Next.js 16 App Router, TypeScript, Tailwind CSS, TanStack Query v5, Recharts, Better Auth, Gravity UI Icons
 - **Backend**: Node.js, Express.js, TypeScript, MongoDB native driver, Zod, Better Auth
 - **AI**: Gemini 1.5 Flash (analyzer, optimizer, variants, scorer, recommender), Groq (chat assistant, auto-tagger)
 

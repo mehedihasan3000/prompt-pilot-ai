@@ -142,13 +142,19 @@ export default function WorkspacePage() {
   const handleSave = async () => {
     if (!result || !inputRef.current) return;
     try {
+      const data = inputRef.current;
       const res = await apiFetch('/prompts', {
         method: 'POST',
         body: JSON.stringify({
           title: 'Saved from Workspace',
-          originalPrompt: inputRef.current.originalPrompt,
-          goal: inputRef.current.goal,
-          targetModel: inputRef.current.targetModel,
+          originalPrompt: data.originalPrompt,
+          goal: data.goal,
+          targetModel: data.targetModel,
+          tone: data.tone,
+          language: data.language,
+          outputLength: data.outputLength,
+          outputFormat: data.outputFormat,
+          category: data.category || 'General',
         }),
       });
       if (res.success) {

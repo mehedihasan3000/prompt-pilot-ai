@@ -2,23 +2,26 @@ import { ObjectId } from 'mongodb';
 import { getDb } from '../config/db';
 import { conversationCollection, Conversation } from '../models/conversation.model';
 import { messageCollection, Message } from '../models/message.model';
+import { mapDoc, mapDocs } from '../utils/mapDoc';
 
 export async function create(userId: string, title: string): Promise<Conversation> {
   const db = getDb();
   const now = new Date();
   const doc: Conversation = { userId, title, createdAt: now, updatedAt: now };
   const result = await db.collection(conversationCollection).insertOne(doc);
-  return { ...doc, _id: result.insertedId } as unknown as Conversation;
+  return mapDoc<Conversation>({ ...doc, _id: result.insertedId })!;
 }
 
 export async function findAll(userId: string) {
   const db = getDb();
-  return db.collection(conversationCollection).find({ userId }).sort({ updatedAt: -1 }).toArray();
+  const docs = await db.collection(conversationCollection).find({ userId }).sort({ updatedAt: -1 }).toArray();
+  return mapDocs<Conversation>(docs);
 }
 
 export async function findById(id: string, userId: string): Promise<Conversation | null> {
   const db = getDb();
-  return db.collection(conversationCollection).findOne({ _id: new ObjectId(id), userId }) as Promise<Conversation | null>;
+  const doc = await db.collection(conversationCollection).findOne({ _id: new ObjectId(id), userId });
+  return mapDoc<Conversation>(doc);
 }
 
 export async function remove(id: string, userId: string): Promise<boolean> {
@@ -34,7 +37,8 @@ export async function getMessages(conversationId: string, userId: string) {
   const db = getDb();
   const conversation = await db.collection(conversationCollection).findOne({ _id: new ObjectId(conversationId), userId });
   if (!conversation) return [];
-  return db.collection(messageCollection).find({ conversationId }).sort({ createdAt: 1 }).toArray();
+  const docs = await db.collection(messageCollection).find({ conversationId }).sort({ createdAt: 1 }).toArray();
+  return mapDocs<Message>(docs);
 }
 
 export async function addMessage(conversationId: string, role: 'user' | 'assistant', content: string): Promise<Message> {
@@ -46,5 +50,5 @@ export async function addMessage(conversationId: string, role: 'user' | 'assista
     { _id: new ObjectId(conversationId) },
     { $set: { updatedAt: now } }
   );
-  return { ...doc, _id: result.insertedId } as unknown as Message;
+  return mapDoc<Message>({ ...doc, _id: result.insertedId })!;
 }

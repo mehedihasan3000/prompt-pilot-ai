@@ -195,9 +195,9 @@ export default function HistoryPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {prompts.map((p) => (
+                {prompts.map((p,idx) => (
                   <tr
-                    key={p.id}
+                    key={idx}
                     className="cursor-pointer transition-colors hover:bg-slate-50"
                     onClick={() => router.push(`/prompts/${p.id}`)}
                   >

@@ -2,6 +2,7 @@ import { ObjectId } from 'mongodb';
 import { getDb } from '../config/db';
 import { reviewCollection, Review } from '../models/review.model';
 import { templateCollection } from '../models/template.model';
+import { mapDoc, mapDocs } from '../utils/mapDoc';
 
 export async function create(templateId: string, userId: string, data: { rating: number; comment: string }): Promise<Review> {
   const db = getDb();
@@ -27,12 +28,13 @@ export async function create(templateId: string, userId: string, data: { rating:
     );
   }
 
-  return { ...doc, _id: result.insertedId } as unknown as Review;
+  return mapDoc<Review>({ ...doc, _id: result.insertedId })!;
 }
 
 export async function findAllByTemplate(templateId: string) {
   const db = getDb();
-  return db.collection(reviewCollection).find({ templateId }).sort({ createdAt: -1 }).toArray();
+  const docs = await db.collection(reviewCollection).find({ templateId }).sort({ createdAt: -1 }).toArray();
+  return mapDocs<Review>(docs);
 }
 
 export async function update(id: string, userId: string, data: Partial<Review>): Promise<Review | null> {
@@ -42,7 +44,7 @@ export async function update(id: string, userId: string, data: Partial<Review>):
     { $set: { ...data } },
     { returnDocument: 'after' }
   );
-  return result as unknown as Review | null;
+  return mapDoc<Review>(result);
 }
 
 export async function remove(id: string, userId: string): Promise<boolean> {

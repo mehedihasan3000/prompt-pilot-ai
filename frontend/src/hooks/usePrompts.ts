@@ -28,6 +28,7 @@ export function usePrompts(filters?: PromptsFilters) {
 }
 
 export function usePrompt(id: string) {
+  const isValid = !!id && id.length === 24 && /^[0-9a-fA-F]{24}$/.test(id);
   return useQuery({
     queryKey: ['prompts', id],
     queryFn: async () => {
@@ -37,7 +38,7 @@ export function usePrompt(id: string) {
       }
       return result.data as Prompt;
     },
-    enabled: !!id,
+    enabled: isValid,
   });
 }
 

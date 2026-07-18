@@ -4,6 +4,7 @@ import { ObjectId } from 'mongodb';
 import { getDb } from '../config/db';
 import { userCollection, User } from '../models/user.model';
 import { env } from '../config/env';
+import { mapDoc } from '../utils/mapDoc';
 
 export interface AuthResponse {
   user: Omit<User, 'password'>;
@@ -29,7 +30,7 @@ export async function register(name: string, email: string, password: string): P
   };
   const result = await db.collection(userCollection).insertOne(user);
   const { password: _, ...userWithoutPassword } = user;
-  return { user: userWithoutPassword as Omit<User, 'password'>, token: result.insertedId.toString() };
+  return { user: mapDoc<Omit<User, 'password'>>(userWithoutPassword)!, token: result.insertedId.toString() };
 }
 
 export async function login(email: string, password: string): Promise<AuthResponse> {
@@ -43,7 +44,7 @@ export async function login(email: string, password: string): Promise<AuthRespon
     throw Object.assign(new Error('Invalid credentials'), { statusCode: 401 });
   }
   const { password: _, ...userWithoutPassword } = user;
-  return { user: userWithoutPassword as unknown as Omit<User, 'password'>, token: user._id.toString() };
+  return { user: mapDoc<Omit<User, 'password'>>(userWithoutPassword)!, token: user._id.toString() };
 }
 
 export async function googleAuth(googleData: { name: string; email: string; image?: string }): Promise<AuthResponse> {
@@ -62,10 +63,10 @@ export async function googleAuth(googleData: { name: string; email: string; imag
     };
     const result = await db.collection(userCollection).insertOne(newUser);
     const { password: _, ...userWithoutPassword } = newUser;
-    return { user: userWithoutPassword as Omit<User, 'password'>, token: result.insertedId.toString() };
+    return { user: mapDoc<Omit<User, 'password'>>(userWithoutPassword)!, token: result.insertedId.toString() };
   }
   const { password: _, ...userWithoutPassword } = user;
-  return { user: userWithoutPassword as unknown as Omit<User, 'password'>, token: user._id.toString() };
+  return { user: mapDoc<Omit<User, 'password'>>(userWithoutPassword)!, token: user._id.toString() };
 }
 
 export function getGoogleUrl(): string {
@@ -135,10 +136,10 @@ export async function demoLogin(): Promise<AuthResponse> {
     };
     const result = await db.collection(userCollection).insertOne(newUser);
     const { password: _, ...userWithoutPassword } = newUser;
-    return { user: userWithoutPassword as Omit<User, 'password'>, token: result.insertedId.toString() };
+    return { user: mapDoc<Omit<User, 'password'>>(userWithoutPassword)!, token: result.insertedId.toString() };
   }
   const { password: _, ...userWithoutPassword } = user;
-  return { user: userWithoutPassword as unknown as Omit<User, 'password'>, token: user._id.toString() };
+  return { user: mapDoc<Omit<User, 'password'>>(userWithoutPassword)!, token: user._id.toString() };
 }
 
 export async function logout(userId: string): Promise<void> {
@@ -152,7 +153,7 @@ export async function getMe(userId: string): Promise<Omit<User, 'password'>> {
     throw Object.assign(new Error('User not found'), { statusCode: 404 });
   }
   const { password: _, ...userWithoutPassword } = user;
-  return userWithoutPassword as unknown as Omit<User, 'password'>;
+  return mapDoc<Omit<User, 'password'>>(userWithoutPassword)!;
 }
 
 export async function updateProfile(userId: string, data: Partial<Pick<User, 'name' | 'image'>>): Promise<Omit<User, 'password'>> {
@@ -163,7 +164,7 @@ export async function updateProfile(userId: string, data: Partial<Pick<User, 'na
   );
   const user = await db.collection(userCollection).findOne({ _id: new ObjectId(userId) });
   const { password: _, ...userWithoutPassword } = user!;
-  return userWithoutPassword as unknown as Omit<User, 'password'>;
+  return mapDoc<Omit<User, 'password'>>(userWithoutPassword)!;
 }
 
 export async function deleteAccount(userId: string): Promise<void> {

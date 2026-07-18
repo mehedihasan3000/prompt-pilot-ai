@@ -70,7 +70,7 @@ export async function googleAuth(googleData: { name: string; email: string; imag
 }
 
 export function getGoogleUrl(): string {
-  const redirectUri = `${env.BETTER_AUTH_URL}/api/auth/callback/google`;
+  const redirectUri = env.GOOGLE_REDIRECT_URL || `${env.BETTER_AUTH_URL}/api/auth/callback/google`;
   const params = new URLSearchParams({
     client_id: env.GOOGLE_CLIENT_ID,
     redirect_uri: redirectUri,
@@ -83,7 +83,7 @@ export function getGoogleUrl(): string {
 }
 
 export async function handleGoogleCallback(code: string): Promise<AuthResponse> {
-  const redirectUri = `${env.BETTER_AUTH_URL}/api/auth/callback/google`;
+  const redirectUri = env.GOOGLE_REDIRECT_URL || `${env.BETTER_AUTH_URL}/api/auth/callback/google`;
 
   const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',

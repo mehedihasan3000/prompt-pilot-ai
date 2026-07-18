@@ -13,6 +13,7 @@ const envSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string(),
   GEMINI_API_KEY: z.string(),
   GROQ_API_KEY: z.string(),
+  GOOGLE_REDIRECT_URL: z.string().optional(),
 });
 
 export const env = envSchema.parse(process.env);

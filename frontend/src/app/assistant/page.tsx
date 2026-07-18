@@ -141,6 +141,8 @@ export default function AssistantPage() {
   const handleSend = useCallback(
     async (content: string) => {
       let id = activeConversationId;
+      const isNew = !id;
+
       if (!id) {
         const res = await createConversation();
         if (res.success && res.data) {
@@ -151,10 +153,16 @@ export default function AssistantPage() {
           return;
         }
       }
+
       setSuggestedFollowUps([]);
       sendMessage(content, id);
+
+      if (isNew || conversations.find((c) => c.id === id)?.title === 'New Chat') {
+        const title = content.length > 50 ? content.substring(0, 50).trim() + '...' : content;
+        setConversations((prev) => prev.map((c) => (c.id === id ? { ...c, title } : c)));
+      }
     },
-    [activeConversationId, sendMessage]
+    [activeConversationId, sendMessage, conversations]
   );
 
   const handleSelectFollowUp = useCallback(

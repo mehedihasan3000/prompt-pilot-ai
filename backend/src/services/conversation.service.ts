@@ -41,6 +41,14 @@ export async function getMessages(conversationId: string, userId: string) {
   return mapDocs<Message>(docs);
 }
 
+export async function updateTitle(id: string, userId: string, title: string): Promise<void> {
+  const db = getDb();
+  await db.collection(conversationCollection).updateOne(
+    { _id: new ObjectId(id), userId },
+    { $set: { title, updatedAt: new Date() } }
+  );
+}
+
 export async function addMessage(conversationId: string, role: 'user' | 'assistant', content: string): Promise<Message> {
   const db = getDb();
   const now = new Date();

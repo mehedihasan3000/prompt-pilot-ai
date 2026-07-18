@@ -60,6 +60,10 @@ export async function chat(req: Request, res: Response, next: NextFunction): Pro
 
     if (conversationId) {
       await conversationService.addMessage(conversationId, 'user', message);
+      if (!conversationHistory?.length) {
+        const title = message.length > 50 ? message.substring(0, 50).trim() + '...' : message;
+        await conversationService.updateTitle(conversationId, req.userId!, title);
+      }
     }
 
     const result = await chatAssistantService.chat({ message, conversationHistory });

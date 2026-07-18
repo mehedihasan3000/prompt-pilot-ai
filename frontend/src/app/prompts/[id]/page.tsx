@@ -312,11 +312,20 @@ export default function PromptDetailPage() {
             <Lightbulb className="h-5 w-5 text-amber-500" />
             Recommendations
           </h3>
-          <ul className="space-y-2">
+          <ul className="space-y-3">
             {prompt.recommendations.map((r, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
-                <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-amber-500" />
-                {r}
+              <li key={i} className="rounded-lg border border-slate-200 p-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-slate-900">{r.title}</span>
+                  {r.priority && (
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                      r.priority === 'high' ? 'bg-red-100 text-red-700' :
+                      r.priority === 'medium' ? 'bg-amber-100 text-amber-700' :
+                      'bg-slate-100 text-slate-600'
+                    }`}>{r.priority}</span>
+                  )}
+                </div>
+                {r.description && <p className="mt-1 text-sm text-slate-600">{r.description}</p>}
               </li>
             ))}
           </ul>

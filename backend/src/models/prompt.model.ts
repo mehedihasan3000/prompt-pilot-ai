@@ -14,6 +14,12 @@ export interface ScoreBreakdown {
   toneAlignment: number;
 }
 
+export interface Recommendation {
+  title: string;
+  description: string;
+  priority: string;
+}
+
 export interface Prompt {
   _id?: ObjectId;
   userId: string;
@@ -29,13 +35,20 @@ export interface Prompt {
   category: string;
   tags: string[];
   optimizedPrompt: string;
+  explanation: string;
+  changesMade: string[];
   variants: Variant[];
   score: number;
   scoreBreakdown: ScoreBreakdown;
   strengths: string[];
   weaknesses: string[];
-  recommendations: string[];
+  missingContext: string[];
+  analysis: string;
+  recommendations: Recommendation[];
   followUpQuestions: string[];
+  contextCheck: { missingContextPoints: string[]; requiredFollowUps: string[] };
+  autoTags: { tags: string[]; category: string };
+  plan: { intent: string; taskType: string };
   favorite: boolean;
   collectionId?: string;
   createdAt: Date;

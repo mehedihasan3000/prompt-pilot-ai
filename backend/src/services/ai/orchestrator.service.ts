@@ -41,81 +41,85 @@ export interface OrchestratorResult {
 }
 
 export async function runFullWorkflow(input: OrchestratorInput): Promise<OrchestratorResult> {
-  const plan = await plannerService.plan(input);
+  const [plan, analysis, contextCheck, weaknessResult, optimizerResult, autoTags] = await Promise.all([
+    plannerService.plan(input),
 
-  const analysis = await analyzerService.analyze({
-    originalPrompt: input.originalPrompt,
-    goal: input.goal,
-    targetModel: input.targetModel,
-    tone: input.tone,
-    audience: input.audience,
-    extraContext: input.extraContext,
-    constraints: input.constraints,
-  });
+    analyzerService.analyze({
+      originalPrompt: input.originalPrompt,
+      goal: input.goal,
+      targetModel: input.targetModel,
+      tone: input.tone,
+      audience: input.audience,
+      extraContext: input.extraContext,
+      constraints: input.constraints,
+    }),
 
-  const contextCheck = await contextCheckerService.checkContext({
-    originalPrompt: input.originalPrompt,
-    goal: input.goal,
-    audience: input.audience,
-    extraContext: input.extraContext,
-  });
+    contextCheckerService.checkContext({
+      originalPrompt: input.originalPrompt,
+      goal: input.goal,
+      audience: input.audience,
+      extraContext: input.extraContext,
+    }),
 
-  const weaknessResult = await weaknessDetectorService.detectWeaknesses({
-    originalPrompt: input.originalPrompt,
-    goal: input.goal,
-    constraints: input.constraints,
-    tone: input.tone,
-    audience: input.audience,
-  });
+    weaknessDetectorService.detectWeaknesses({
+      originalPrompt: input.originalPrompt,
+      goal: input.goal,
+      constraints: input.constraints,
+      tone: input.tone,
+      audience: input.audience,
+    }),
 
-  const followUpQuestions = await followUpService.generateFollowUps({
-    originalPrompt: input.originalPrompt,
-    goal: input.goal,
-    missingContext: [...analysis.missingContext, ...contextCheck.missingContextPoints],
-    weaknesses: [...analysis.weaknesses, ...weaknessResult.weaknesses],
-  });
+    optimizerService.optimize(input),
 
-  const optimizerResult = await optimizerService.optimize(input);
+    autoTaggerService.autoTag({
+      originalPrompt: input.originalPrompt,
+      goal: input.goal,
+      category: input.category,
+      outputFormat: input.outputFormat,
+      targetModel: input.targetModel,
+    }),
+  ]);
 
-  const variants = await variantGeneratorService.generateVariants({
-    originalPrompt: input.originalPrompt,
-    optimizedPrompt: optimizerResult.optimizedPrompt,
-    goal: input.goal,
-    targetModel: input.targetModel,
-    tone: input.tone,
-  });
+  const [followUpQuestions, variants, scoreResult, recommendations] = await Promise.all([
+    followUpService.generateFollowUps({
+      originalPrompt: input.originalPrompt,
+      goal: input.goal,
+      missingContext: [...analysis.missingContext, ...contextCheck.missingContextPoints],
+      weaknesses: [...analysis.weaknesses, ...weaknessResult.weaknesses],
+    }),
 
-  const scoreResult = await qualityEvaluatorService.evaluateQuality({
-    originalPrompt: input.originalPrompt,
-    optimizedPrompt: optimizerResult.optimizedPrompt,
-    goal: input.goal,
-    targetModel: input.targetModel,
-    tone: input.tone,
-  });
+    variantGeneratorService.generateVariants({
+      originalPrompt: input.originalPrompt,
+      optimizedPrompt: optimizerResult.optimizedPrompt,
+      goal: input.goal,
+      targetModel: input.targetModel,
+      tone: input.tone,
+    }),
 
-  const recommendations = await recommenderService.recommend({
-    originalPrompt: input.originalPrompt,
-    optimizedPrompt: optimizerResult.optimizedPrompt,
-    score: analysis.score,
-    scoreBreakdown: {
-      clarity: analysis.clarity,
-      context: analysis.context,
-      specificity: analysis.specificity,
-      constraints: analysis.constraints,
-      outputFormat: analysis.outputFormat,
-      toneAlignment: analysis.toneAlignment,
-    },
-    strengths: analysis.strengths,
-    weaknesses: analysis.weaknesses,
-  });
+    qualityEvaluatorService.evaluateQuality({
+      originalPrompt: input.originalPrompt,
+      optimizedPrompt: optimizerResult.optimizedPrompt,
+      goal: input.goal,
+      targetModel: input.targetModel,
+      tone: input.tone,
+    }),
 
-  const autoTags = await autoTaggerService.autoTag({
-    originalPrompt: input.originalPrompt,
-    goal: input.goal,
-    category: input.category,
-    outputFormat: input.outputFormat,
-    targetModel: input.targetModel,
-  });
+    recommenderService.recommend({
+      originalPrompt: input.originalPrompt,
+      optimizedPrompt: optimizerResult.optimizedPrompt,
+      score: analysis.score,
+      scoreBreakdown: {
+        clarity: analysis.clarity,
+        context: analysis.context,
+        specificity: analysis.specificity,
+        constraints: analysis.constraints,
+        outputFormat: analysis.outputFormat,
+        toneAlignment: analysis.toneAlignment,
+      },
+      strengths: analysis.strengths,
+      weaknesses: analysis.weaknesses,
+    }),
+  ]);
 
   return {
     plan: { intent: plan.intent, taskType: plan.taskType },

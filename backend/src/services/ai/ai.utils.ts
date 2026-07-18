@@ -52,7 +52,7 @@ export async function callGroq<T>(options: AiCallOptions): Promise<T> {
   });
   const text = completion.choices[0]?.message?.content;
   if (!text) throw new Error('Groq returned empty response');
-  console.log(`[Groq] Response: ${text}`);
+  //console.log(`[Groq] Response: ${text}`);
   try {
     return JSON.parse(text) as T;
   } catch {
@@ -63,13 +63,13 @@ export async function callGroq<T>(options: AiCallOptions): Promise<T> {
 export async function callAi<T>(options: AiCallOptions): Promise<T> {
   try {
     const result = await callGroq<T>(options);
-    console.log(`[callAi] Using Groq`);
+    //console.log(`[callAi] Using Groq`);
     return result;
   } catch (groqError) {
-    console.log(`[callAi] Groq failed: ${(groqError as Error).message}. Falling back to Gemini.`);
+    //console.log(`[callAi] Groq failed: ${(groqError as Error).message}. Falling back to Gemini.`);
     try {
       const result = await callGemini<T>(options);
-      console.log(`[callAi] Using Gemini (fallback)`);
+      //console.log(`[callAi] Using Gemini (fallback)`);
       return result;
     } catch (geminiError) {
       throw new Error(`AI call failed. Groq: ${(groqError as Error).message}. Gemini: ${(geminiError as Error).message}`);

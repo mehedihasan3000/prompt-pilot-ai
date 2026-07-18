@@ -25,7 +25,9 @@ export async function create(data: Partial<Template>): Promise<Template> {
 
 export async function findAll(params: FindAllParams) {
   const db = getDb();
-  const { search, category, targetModel, difficulty, userId, sort = 'createdAt', order = 'desc', page = 1, limit = 20 } = params;
+  const { search, category, targetModel, difficulty, userId, sort = 'createdAt', order = 'desc', page: rawPage = 1, limit: rawLimit = 20 } = params;
+  const page = Number(rawPage);
+  const limit = Number(rawLimit);
   const query: any = {};
   if (userId) {
     query.userId = userId;

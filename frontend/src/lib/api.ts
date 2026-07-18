@@ -46,7 +46,8 @@ async function apiFetch<T>(
       ...(options?.headers as Record<string, string>),
     };
 
-    const url = `/api${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+    const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : '';
+    const url = `${BASE_URL}/api${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
     const response = await fetch(url, {
       headers,
       ...options,

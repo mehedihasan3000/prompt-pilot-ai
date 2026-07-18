@@ -54,7 +54,13 @@ Return a JSON object:
 
     const systemPrompt = 'You are a prompt engineering planner. Analyze the request and plan the optimization approach. Return ONLY valid JSON.';
 
-    return await callAi<PlannerResult>({ prompt, systemPrompt, temperature: 0.3 });
+    const result = await callAi<PlannerResult>({ prompt, systemPrompt, temperature: 0.3 });
+    return {
+      intent: typeof result.intent === 'string' ? result.intent : FALLBACK.intent,
+      taskType: typeof result.taskType === 'string' ? result.taskType : FALLBACK.taskType,
+      requiredContext: Array.isArray(result.requiredContext) ? result.requiredContext.filter((c): c is string => typeof c === 'string') : FALLBACK.requiredContext,
+      optimizationPath: typeof result.optimizationPath === 'string' ? result.optimizationPath : FALLBACK.optimizationPath,
+    };
   } catch {
     return FALLBACK;
   }

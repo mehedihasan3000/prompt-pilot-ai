@@ -52,16 +52,16 @@ async function apiFetch<T>(
       ...options,
     });
 
-    const contentType = response.headers.get('content-type') || '';
-    if (!contentType.includes('application/json')) {
-      const text = await response.text();
+    const responseText = await response.text();
+    let data: any;
+    try {
+      data = JSON.parse(responseText);
+    } catch {
       return {
         success: false,
-        error: `The server encountered an error (${response.status}). Please try again.`,
+        error: `Invalid response from server (status ${response.status}). Please try again.`,
       };
     }
-
-    const data = await response.json();
 
     if (!response.ok) {
       return {

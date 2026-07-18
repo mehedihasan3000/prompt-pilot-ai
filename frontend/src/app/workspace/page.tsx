@@ -5,7 +5,6 @@ import {
   PenSquare,
   Sparkles,
   CheckCircle2,
-  AlertCircle,
   ChevronDown,
   ChevronUp,
   Save,
@@ -14,6 +13,8 @@ import {
   Star,
   Lightbulb,
   Copy,
+  Crosshair,
+  HelpCircle,
 } from 'lucide-react';
 import { WorkspaceForm } from '@/components/ai/WorkspaceForm';
 import { AgentProgress } from '@/components/ai/AgentProgress';
@@ -109,6 +110,7 @@ export default function WorkspacePage() {
     setError(null);
     setResult(null);
 
+    let outcome: 'success' | 'error' = 'error';
     try {
       const response = await analyzePrompt(data);
       if (!response.success || !response.data) {
@@ -117,13 +119,18 @@ export default function WorkspacePage() {
       setResult(response.data as unknown as OrchestratorResult);
       setStatus('completed');
       setStep(steps.length);
-      toast('Prompt analysis completed successfully!', 'success');
+      outcome = 'success';
     } catch (err) {
       setStatus('error');
       setError(err instanceof Error ? err.message : 'Failed to analyze prompt. Please try again.');
-      toast('Failed to analyze prompt', 'error');
     } finally {
       setIsLoading(false);
+    }
+
+    if (outcome === 'success') {
+      toast('Prompt analysis completed successfully!', 'success');
+    } else {
+      toast('Try again in a few moments', 'error');
     }
   }, []);
 
@@ -251,9 +258,55 @@ export default function WorkspacePage() {
 
                 <div className="grid gap-6 lg:grid-cols-5">
                   <div className="space-y-6 lg:col-span-3">
+                    <CollapsibleSection title="Planned Strategy" icon={Crosshair}>
+                      <div className="space-y-3">
+                        <div className="rounded-lg bg-slate-50 p-3">
+                          <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Intent</p>
+                          <p className="mt-1 text-sm text-slate-800">{result.plan.intent}</p>
+                        </div>
+                        <div className="rounded-lg bg-slate-50 p-3">
+                          <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Task Type</p>
+                          <p className="mt-1 text-sm text-slate-800 capitalize">{result.plan.taskType}</p>
+                        </div>
+                      </div>
+                    </CollapsibleSection>
+
                     <CollapsibleSection title="Analysis" icon={CheckCircle2}>
                       <AnalysisResult result={result.analysis} />
                     </CollapsibleSection>
+
+                    {result.contextCheck.missingContextPoints.length + result.contextCheck.requiredFollowUps.length > 0 && (
+                      <CollapsibleSection title="Context Check" icon={HelpCircle}>
+                        <div className="space-y-4">
+                          {result.contextCheck.missingContextPoints.length > 0 && (
+                            <div>
+                              <p className="mb-2 text-xs font-medium text-slate-500 uppercase tracking-wide">Missing Context Points</p>
+                              <ul className="space-y-1.5">
+                                {result.contextCheck.missingContextPoints.map((point, i) => (
+                                  <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-amber-400" />
+                                    {typeof point === 'string' ? point : JSON.stringify(point)}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          {result.contextCheck.requiredFollowUps.length > 0 && (
+                            <div>
+                              <p className="mb-2 text-xs font-medium text-slate-500 uppercase tracking-wide">Required Follow-ups</p>
+                              <ul className="space-y-1.5">
+                                {result.contextCheck.requiredFollowUps.map((question, i) => (
+                                  <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary-400" />
+                                    {typeof question === 'string' ? question : JSON.stringify(question)}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      </CollapsibleSection>
+                    )}
 
                     {result.followUpQuestions.length > 0 && (
                       <CollapsibleSection title="Follow-up Questions" icon={Sparkles}>

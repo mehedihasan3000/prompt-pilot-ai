@@ -35,7 +35,12 @@ Return a JSON object exactly:
   "optionalQuestions": [<string - nice-to-have clarifying questions>]
 }`;
 
-    return await callAi<ContextCheckerResult>({ prompt, systemPrompt, temperature: 0.3 });
+    const result = await callAi<ContextCheckerResult>({ prompt, systemPrompt, temperature: 0.3 });
+    return {
+      missingContextPoints: Array.isArray(result.missingContextPoints) ? result.missingContextPoints.filter((m): m is string => typeof m === 'string') : FALLBACK.missingContextPoints,
+      requiredFollowUps: Array.isArray(result.requiredFollowUps) ? result.requiredFollowUps.filter((r): r is string => typeof r === 'string') : FALLBACK.requiredFollowUps,
+      optionalQuestions: Array.isArray(result.optionalQuestions) ? result.optionalQuestions.filter((o): o is string => typeof o === 'string') : FALLBACK.optionalQuestions,
+    };
   } catch {
     return FALLBACK;
   }

@@ -29,7 +29,7 @@ const sidebarLinks = [
   { href: '/analytics', label: 'Analytics', icon: BarChart3 },
   { href: '/assistant', label: 'Assistant', icon: Bot },
   { href: '/templates', label: 'Templates', icon: LayoutTemplate },
-  { href: '/templates/create', label: 'Add Template', icon: PlusCircle },
+  { href: '/templates/add', label: 'Add Template', icon: PlusCircle },
   { href: '/profile', label: 'Profile', icon: User },
 ];
 

@@ -8,6 +8,7 @@ interface FindAllParams {
   category?: string;
   targetModel?: string;
   difficulty?: string;
+  userId?: string;
   sort?: string;
   order?: 'asc' | 'desc';
   page?: number;
@@ -24,8 +25,13 @@ export async function create(data: Partial<Template>): Promise<Template> {
 
 export async function findAll(params: FindAllParams) {
   const db = getDb();
-  const { search, category, targetModel, difficulty, sort = 'createdAt', order = 'desc', page = 1, limit = 20 } = params;
-  const query: any = { visibility: 'public' };
+  const { search, category, targetModel, difficulty, userId, sort = 'createdAt', order = 'desc', page = 1, limit = 20 } = params;
+  const query: any = {};
+  if (userId) {
+    query.userId = userId;
+  } else {
+    query.visibility = 'public';
+  }
   if (search) query.title = { $regex: search, $options: 'i' };
   if (category) query.category = category;
   if (targetModel) query.targetModel = targetModel;

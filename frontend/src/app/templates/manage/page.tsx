@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Eye, Trash2, Star, Plus, Loader2 } from 'lucide-react';
+import { Eye, Trash2, Star, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { SkeletonRow } from '@/components/ui/Skeleton';
@@ -17,14 +17,13 @@ import type { Template } from '@/types/template.types';
 
 export default function ManageTemplatesPage() {
   const router = useRouter();
-  const { data: user, isLoading: authLoading } = useCurrentUser();
-  const { data, isLoading, isError, error, refetch } = useTemplates({ sort: 'newest' });
+  const { data: user } = useCurrentUser();
+  const { data, isLoading, isError, error, refetch } = useTemplates({ userId: user?.id, sort: 'newest' });
   const deleteMutation = useDeleteTemplate();
 
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const templates: Template[] = data?.templates || [];
-  const myTemplates = templates.filter((t) => t.userId === user?.id);
 
   const handleDelete = useCallback(async () => {
     if (!deleteId) return;
@@ -76,7 +75,7 @@ export default function ManageTemplatesPage() {
         </Button>
       </div>
 
-      {myTemplates.length === 0 ? (
+      {templates.length === 0 ? (
         <EmptyState
           icon={Star}
           title="No templates yet"
@@ -98,7 +97,7 @@ export default function ManageTemplatesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {myTemplates.map((t) => (
+              {templates.map((t) => (
                 <tr key={t.id} className="transition-colors hover:bg-slate-50">
                   <td className="px-4 py-3">
                     <p className="font-medium text-slate-900 line-clamp-1">{t.title}</p>

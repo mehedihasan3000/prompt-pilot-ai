@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import {
   ArrowLeft, Star, Copy, Check, BarChart3,
-  Bookmark, Heart, MessageSquare, Send,
+  Bookmark, Heart, Send,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -62,7 +62,9 @@ export default function TemplateDetailPage() {
             relatedRes.data.templates.filter((t) => t.id !== id).slice(0, 4)
           );
         }
-      } catch {
+      } catch (err) {
+        toast('Failed to load reviews', 'error');
+        console.error(err);
       } finally {
         setReviewsLoading(false);
         setRelatedLoading(false);
@@ -71,7 +73,7 @@ export default function TemplateDetailPage() {
     if (template) {
       load();
     }
-  }, [template, id]);
+  }, [template?.category, id]);
 
   const handleCopy = useCallback(async () => {
     if (!template) return;

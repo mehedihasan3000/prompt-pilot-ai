@@ -9,6 +9,7 @@ interface TemplatesFilters {
   category?: string;
   targetModel?: string;
   difficulty?: string;
+  userId?: string;
   sort?: string;
   order?: string;
   page?: number;

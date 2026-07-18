@@ -11,7 +11,7 @@ import { toast } from '@/components/ui/Toast';
 import { TemplateCard } from '@/components/cards/TemplateCard';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useCurrentUser } from '@/hooks/useAuth';
-import { createTemplate } from '@/services/api/templates';
+import { useCreateTemplate } from '@/hooks/useTemplates';
 import type { Template, CreateTemplatePayload } from '@/types/template.types';
 
 const CATEGORY_OPTIONS = [
@@ -82,10 +82,10 @@ const defaultForm = {
 
 export default function AddTemplatePage() {
   const router = useRouter();
-  const { data: user, isLoading: authLoading } = useCurrentUser();
+  const { data: user } = useCurrentUser();
   const [form, setForm] = useState({ ...defaultForm });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const createMutation = useCreateTemplate();
   const [showPreview, setShowPreview] = useState(false);
 
   const previewTemplate: Template = {
@@ -124,47 +124,39 @@ export default function AddTemplatePage() {
 
   const handleChange = useCallback((field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => {
-        const next = { ...prev };
-        delete next[field];
-        return next;
-      });
-    }
-  }, [errors]);
+    setErrors((prev) => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
-    setIsSubmitting(true);
-    try {
-      const payload: CreateTemplatePayload = {
-        title: form.title.trim(),
-        shortDescription: form.shortDescription.trim(),
-        fullDescription: form.fullDescription.trim() || undefined,
-        promptContent: form.promptContent,
-        category: form.category,
-        targetModel: form.targetModel,
-        difficulty: form.difficulty,
-        tone: form.tone || undefined,
-        outputType: form.outputType || undefined,
-        tags: form.tags ? form.tags.split(',').map((t) => t.trim()).filter(Boolean) : undefined,
-        imageUrl: form.imageUrl || undefined,
-        visibility: form.visibility as 'public' | 'private',
-      };
+    const payload: CreateTemplatePayload = {
+      title: form.title.trim(),
+      shortDescription: form.shortDescription.trim(),
+      fullDescription: form.fullDescription.trim() || undefined,
+      promptContent: form.promptContent,
+      category: form.category,
+      targetModel: form.targetModel,
+      difficulty: form.difficulty,
+      tone: form.tone || undefined,
+      outputType: form.outputType || undefined,
+      tags: form.tags ? form.tags.split(',').map((t) => t.trim()).filter(Boolean) : undefined,
+      imageUrl: form.imageUrl || undefined,
+      visibility: form.visibility as 'public' | 'private',
+    };
 
-      const result = await createTemplate(payload);
-      if (result.success) {
-        toast('Template created successfully!', 'success');
-        router.push('/templates/manage');
-      } else {
-        toast(result.error || 'Failed to create template', 'error');
-      }
+    try {
+      await createMutation.mutateAsync(payload);
+      toast('Template created successfully!', 'success');
+      router.push('/templates/manage');
     } catch {
-      toast('An unexpected error occurred', 'error');
-    } finally {
-      setIsSubmitting(false);
+      toast('Failed to create template', 'error');
     }
   };
 
@@ -318,7 +310,7 @@ export default function AddTemplatePage() {
               <RotateCcw className="h-4 w-4" />
               Reset
             </Button>
-            <Button variant="primary" type="submit" isLoading={isSubmitting}>
+            <Button variant="primary" type="submit" isLoading={createMutation.isPending}>
               <Save className="h-4 w-4" />
               Create Template
             </Button>

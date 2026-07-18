@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FolderOpen, Plus, Pencil, Trash2, ChevronDown, ChevronUp,
+  ArrowLeft, FolderOpen, Plus, Pencil, Trash2, ChevronDown, ChevronUp,
   FileText, X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -193,6 +193,12 @@ export default function CollectionsPage() {
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
+          <div className="mb-1 flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard')}>
+              <ArrowLeft className="h-4 w-4" />
+              Dashboard
+            </Button>
+          </div>
           <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">Collections</h1>
           <p className="mt-1 text-sm text-slate-500">
             Organize your prompts into themed collections.

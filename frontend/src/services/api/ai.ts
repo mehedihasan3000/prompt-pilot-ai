@@ -2,6 +2,7 @@ import { apiFetch } from '@/lib/api';
 import type { OrchestratorResult, OptimizeResult, VariantItem, ScoreResult, RecommendationItem, ChatResponse, AutoTagResult } from '@/types/ai.types';
 
 export interface AnalyzeInput {
+  title?: string;
   originalPrompt: string;
   goal: string;
   targetModel: string;

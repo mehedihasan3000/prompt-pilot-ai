@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, RotateCcw, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Save, RotateCcw, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
@@ -169,6 +169,12 @@ export default function AddTemplatePage() {
     <ProtectedRoute>
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">
+        <div className="mb-1 flex items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard')}>
+            <ArrowLeft className="h-4 w-4" />
+            Dashboard
+          </Button>
+        </div>
         <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">Create Template</h1>
         <p className="mt-1 text-sm text-slate-500">
           Share your prompt templates with the community.

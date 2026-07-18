@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, SlidersHorizontal, Heart, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Search, SlidersHorizontal, Heart, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Select';
 import { Badge } from '@/components/ui/Badge';
@@ -103,6 +103,12 @@ export default function HistoryPage() {
     <ProtectedRoute>
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">
+        <div className="mb-1 flex items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard')}>
+            <ArrowLeft className="h-4 w-4" />
+            Dashboard
+          </Button>
+        </div>
         <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">Prompt History</h1>
         <p className="mt-1 text-sm text-slate-500">
           View and manage all your past prompt analyses.

@@ -124,6 +124,7 @@ export function WorkspaceForm({ onSubmit, isLoading }: WorkspaceFormProps) {
     if (!validate()) return;
 
     const data: AnalyzeInput = {
+      title: title.trim(),
       originalPrompt: originalPrompt.trim(),
       goal: goal.trim(),
       targetModel,

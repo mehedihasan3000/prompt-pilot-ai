@@ -154,7 +154,7 @@ export default function WorkspacePage() {
       const res = await apiFetch('/prompts', {
         method: 'POST',
         body: JSON.stringify({
-          title: 'Saved from Workspace',
+          title: data.title || 'Saved from Workspace',
           originalPrompt: data.originalPrompt,
           goal: data.goal,
           targetModel: data.targetModel,

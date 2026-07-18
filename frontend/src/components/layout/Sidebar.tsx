@@ -28,7 +28,7 @@ const sidebarLinks = [
   { href: '/collections', label: 'Collections', icon: FolderOpen },
   { href: '/analytics', label: 'Analytics', icon: BarChart3 },
   { href: '/assistant', label: 'Assistant', icon: Bot },
-  { href: '/templates', label: 'Templates', icon: LayoutTemplate },
+  { href: '/templates/manage', label: 'Templates', icon: LayoutTemplate },
   { href: '/templates/add', label: 'Add Template', icon: PlusCircle },
   { href: '/profile', label: 'Profile', icon: User },
 ];

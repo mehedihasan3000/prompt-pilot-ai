@@ -49,8 +49,8 @@ User Input → Planner Agent → Analyzer Agent → Context Checker → Weakness
 - Zod (validation)
 
 ### AI Providers
-- **Gemini 1.5 Flash** — Analyzer, Optimizer, Variant Generator, Quality Evaluator, Recommender
-- **Groq (llama3-8b)** — Chat Assistant, Auto Tagger
+- **Gemini 2.5 Flash** — Analyzer, Optimizer, Variant Generator, Quality Evaluator, Recommender
+- **Groq (llama3.1-8b-instant)** — Chat Assistant, Auto Tagger (Right now it is working as main AI)
 
 ## Project Structure
 

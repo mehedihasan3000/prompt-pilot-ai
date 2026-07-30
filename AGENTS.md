@@ -7,24 +7,16 @@
 cd backend && npm run dev          # tsx watch src/server.ts (port 4000)
 npm run build                       # tsc -> dist/
 npm start                           # node dist/server.js
+npx tsc --noEmit                    # typecheck
 
 # Frontend
 cd frontend && npm run dev          # next dev (port 3000)
 npm run build                       # next build
 npm run lint                        # next lint
+npx tsc --noEmit                    # typecheck
 ```
 
-No test framework or test files exist. No typecheck script — use `npx tsc --noEmit` in each package.
-
-# AGENTS Role
-You are a senior MERN Stack Developer.
-
-## Responsibilities
-
-- Think before coding.
-- Follow clean architecture.
-- Follow SOLID principles.
-- Prefer reusable components.
+No test framework exists.
 
 ## Architecture
 
@@ -32,80 +24,75 @@ You are a senior MERN Stack Developer.
 - `backend/` — Express.js + native MongoDB driver (no Mongoose)
 - `frontend/` — Next.js 16 App Router + TanStack Query v5
 
-Backend entrypoint: `backend/src/server.ts` (connects DB, then starts Express).
-Frontend API client: `frontend/src/lib/api.ts` — auto-prepends `/api` to all URLs.
+Backend entrypoint: `backend/src/server.ts` — connects DB, initializes collections/indexes, then starts Express.
+
+Frontend API client: `frontend/src/lib/api.ts` — prepends `/api`, attaches `x-user-id` header from `localStorage` (`auth_token`). Uses `NEXT_PUBLIC_API_URL` or falls back to `http://localhost:4000`.
+
+Dev proxy: `frontend/next.config.ts` rewrites `/api/*` → `http://localhost:4000/api/*` in dev mode.
 
 ## API response envelope
 
 Every response: `{ success: boolean, data: T }`. Errors: `{ success: false, error: string }`.
 Controllers unpack service results into `data`, never return raw service output.
 
-## Auth (custom token, not proper Better Auth)
+## Auth
 
-Backend middleware (`auth.middleware.ts`) reads `x-user-id` header as the user's MongoDB `_id` string — **no session validation yet** (`// TODO`).
+Backend middleware (`auth.middleware.ts`) reads `x-user-id` header as the user's MongoDB `_id` string — **no session validation yet** (`// TODO` uses Better Auth v1 instead).
 
-Frontend stores token (`x-user-id` value) in `localStorage` under `auth_token`. The `apiFetch` helper attaches it automatically.
+Frontend stores `x-user-id` value in `localStorage` under `auth_token`. The `apiFetch` helper attaches it automatically.
 
-There is also a `frontend/src/lib/auth.ts` using Better Auth React client (`createAuthClient()`), but it is **not wired to the backend middleware**. Both auth paths coexist.
+There is also `frontend/src/lib/auth.ts` using Better Auth React client (`createAuthClient()`), but it is **not wired to the backend middleware**. Both auth paths coexist.
 
 ## MongoDB _id / id mapping
 
-MongoDB native driver returns documents with `_id`. The frontend types all use `id`. Every service that returns data must map `_id` → `id`.
+MongoDB returns `_id`. Frontend types all use `id`. Every service must map `_id` → `id` using the shared utility:
 
-Shared utility at `backend/src/utils/mapDoc.ts`:
 ```ts
-mapDoc<T>(doc)       // single doc: { _id, ...rest } -> { id, ...rest }
-mapDocs<T>(docs)     // array of docs
+mapDoc<T>(doc)    // single: { _id, ...rest } → { id, ...rest }
+mapDocs<T>(docs)  // array of docs
 ```
 
-Services already fixed: prompt, template, review, conversation, collection, auth.
+Always use these when querying MongoDB.
 
-**When adding a new service that queries MongoDB, always use `mapDoc`/`mapDocs` on returned documents.**
+## AI
 
-## AI agents
+11 agent services + orchestrator under `backend/src/services/ai/`.
 
-12 agent services under `backend/src/services/ai/` orchestrated by `orchestrator.ts`.
+**Primary provider**: Groq (`llama-3.1-8b-instant`) via `callAi()` in `ai.utils.ts`.
+**Fallback**: Gemini 2.5 Flash if Groq fails.
+**SSE streaming** (chat assistant): Express SSE directly — no Next.js proxy.
 
-Providers:
-- **Gemini 1.5 Flash** — analyzer, optimizer, variant generator, quality evaluator, recommender
-- **Groq llama3-8b** — chat assistant (SSE streaming), auto tagger
-
-Prompt templates in `backend/src/prompts/`. Rate limits: AI routes 10 req/min, general 100 req/min.
+AI routes rate-limited at 10 req/min, general routes at 100 req/min.
 
 ## CORS
 
-Backend CORS origin = `env.BETTER_AUTH_URL` (default `http://localhost:3000`). Frontend must be on that origin.
+Backend CORS origin = `env.BETTER_AUTH_URL` (default `http://localhost:3000`).
 
 ## Env
 
-Backend validates all env at startup via Zod (`backend/src/config/env.ts`). Missing vars crash on boot.
+All env vars validated at startup via Zod (`backend/src/config/env.ts`). Missing vars crash on boot.
 `backend/.env.example` lists all required vars.
-
-## Routes
-
-All backend routes under `/api/*`:
-- `/api/prompts` — CRUD + toggle favorite
-- `/api/templates` — CRUD + increment usage
-- `/api/collections` — CRUD + add/remove prompts
-- `/api/reviews` — CRUD per template
-- `/api/conversations` — chat conversation CRUD + messages
-- `/api/ai/*` — analyze, optimize, variants, score, recommend, chat (SSE), auto-tag
-- `/api/analytics/*` — dashboard stats
-- `/api/auth/*` — register, login, google, demo-login, logout, me
-- `/api/users/*` — profile update, account delete
-
-Frontend routes match directory structure under `frontend/src/app/` (15 pages: about, analytics, assistant, auth, blog, collections, contact, dashboard, explore, history, login, privacy, profile, prompts, register, templates, terms, workspace).
 
 ## Key conventions
 
-- Backend models are **TypeScript interfaces only** (no Mongoose schemas). Collection names are constants.
-- `Naming` — services export plain async functions, controllers call services, routes wire middleware + controller
-- Validation — Zod schemas in `backend/src/validators/`, applied via `validate` middleware
-- Error handling — centralized `error.middleware.ts` catches all `next(error)` calls
-- Frontend imports use `@/` path alias (maps to `src/`)
+- Backend models are **TypeScript interfaces only** (no Mongoose schemas). Collection names are string constants.
+- Validation: Zod schemas in `backend/src/validators/`, applied via `validate` middleware.
+- Error handling: centralized `error.middleware.ts` catches all `next(error)`.
+- Frontend imports use `@/` path alias (maps to `src/`).
+- Backend `update()` services often call `findById()` then update, rather than `findOneAndUpdate`.
+- `backend/src/config/init-db.ts` creates collections and indexes on startup.
 
-## Notable quirks
+## Routing
 
-- Backend `update()` services often call `findById()` internally rather than using `findOneAndUpdate` — be aware when reading the flow
-- `backend/src/config/db.ts` — raw `MongoClient`, no connection pooling abstraction beyond the driver default
-- `init-db.ts` — creates collections/indexes on startup
+Backend routes under `/api/*`:
+- `/api/auth/*` — register, login, google, demo-login, logout, me
+- `/api/users/*` — profile update, account delete
+- `/api/prompts/*` — CRUD + toggle favorite
+- `/api/templates/*` — CRUD + increment usage
+- `/api/collections/*` — CRUD + add/remove prompts
+- `/api/reviews/*` — CRUD per template
+- `/api/conversations/*` — chat conversation CRUD + messages
+- `/api/ai/*` — analyze, optimize, variants, score, recommend, chat (SSE), auto-tag
+- `/api/analytics/*` — dashboard stats
+
+Frontend routes match the directory structure under `frontend/src/app/`.

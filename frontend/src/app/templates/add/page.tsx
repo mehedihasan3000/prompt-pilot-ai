@@ -118,6 +118,13 @@ export default function AddTemplatePage() {
     if (!form.category) newErrors.category = 'Category is required';
     if (!form.targetModel) newErrors.targetModel = 'Target model is required';
     if (!form.difficulty) newErrors.difficulty = 'Difficulty is required';
+    if (form.imageUrl.trim()) {
+      try {
+        new URL(form.imageUrl);
+      } catch {
+        newErrors.imageUrl = 'Must be a valid URL (e.g., https://example.com/image.png)';
+      }
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
@@ -301,6 +308,7 @@ export default function AddTemplatePage() {
                 placeholder="https://example.com/image.png"
                 value={form.imageUrl}
                 onChange={(e) => handleChange('imageUrl', e.target.value)}
+                error={errors.imageUrl}
               />
               <Select
                 label="Visibility"

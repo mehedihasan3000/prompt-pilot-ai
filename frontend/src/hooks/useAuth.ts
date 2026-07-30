@@ -57,6 +57,20 @@ export function useRegister() {
   });
 }
 
+export function useUpdateProfile() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: Parameters<typeof authApi.updateProfile>[0]) =>
+      authApi.updateProfile(data),
+    onSuccess: (result) => {
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
+      }
+    },
+  });
+}
+
 export function useLogout() {
   const queryClient = useQueryClient();
   const router = useRouter();

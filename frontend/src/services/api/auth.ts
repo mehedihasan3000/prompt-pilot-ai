@@ -34,3 +34,10 @@ export async function logout() {
 export async function getMe() {
   return apiFetch<User>('/auth/me');
 }
+
+export async function updateProfile(data: Partial<Pick<User, 'name' | 'image' | 'bio'>>) {
+  return apiFetch<User>('/users/profile', {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}

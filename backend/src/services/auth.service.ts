@@ -156,7 +156,7 @@ export async function getMe(userId: string): Promise<Omit<User, 'password'>> {
   return mapDoc<Omit<User, 'password'>>(userWithoutPassword)!;
 }
 
-export async function updateProfile(userId: string, data: Partial<Pick<User, 'name' | 'image'>>): Promise<Omit<User, 'password'>> {
+export async function updateProfile(userId: string, data: Partial<Pick<User, 'name' | 'image' | 'bio'>>): Promise<Omit<User, 'password'>> {
   const db = getDb();
   await db.collection(userCollection).updateOne(
     { _id: new ObjectId(userId) },

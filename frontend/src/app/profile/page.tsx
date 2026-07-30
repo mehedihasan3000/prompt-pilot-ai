@@ -9,13 +9,13 @@ import { Textarea } from '@/components/ui/Textarea';
 import { Modal } from '@/components/ui/Modal';
 import { toast } from '@/components/ui/Toast';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import { useCurrentUser } from '@/hooks/useAuth';
+import { useCurrentUser, useUpdateProfile } from '@/hooks/useAuth';
 
 export default function ProfilePage() {
   const router = useRouter();
   const { data: user, isLoading: authLoading } = useCurrentUser();
+  const updateProfileMutation = useUpdateProfile();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [profile, setProfile] = useState({
     name: '',
     email: '',
@@ -38,17 +38,22 @@ export default function ProfilePage() {
         name: user.name || '',
         email: user.email || '',
         image: user.image || '',
-        bio: '',
+        bio: user.bio || '',
       });
     }
   }, [user]);
 
-  function handleSave() {
-    setIsSaving(true);
-    setTimeout(() => {
-      setIsSaving(false);
+  async function handleSave() {
+    const result = await updateProfileMutation.mutateAsync({
+      name: profile.name,
+      image: profile.image || undefined,
+      bio: profile.bio || undefined,
+    });
+    if (result.success) {
       toast('Profile updated successfully', 'success');
-    }, 800);
+    } else {
+      toast(result.error || 'Failed to update profile', 'error');
+    }
   }
 
   function handleDeleteAccount() {
@@ -128,7 +133,7 @@ export default function ProfilePage() {
               />
 
               <div className="flex justify-end pt-2">
-                <Button onClick={handleSave} isLoading={isSaving}>
+                <Button onClick={handleSave} isLoading={updateProfileMutation.isPending}>
                   <Save className="h-4 w-4" />
                   Save Changes
                 </Button>

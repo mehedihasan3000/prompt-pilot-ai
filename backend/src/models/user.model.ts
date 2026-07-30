@@ -4,6 +4,7 @@ export interface User {
   email: string;
   password?: string;
   image?: string;
+  bio?: string;
   provider: 'credentials' | 'google';
   role: 'user' | 'admin';
   createdAt: Date;

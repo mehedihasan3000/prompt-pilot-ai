@@ -14,15 +14,18 @@ interface MobileNavProps {
 
 const publicLinks = [
   { href: '/', label: 'Home' },
-  { href: '/explore', label: 'Explore' },
-  { href: '/about', label: 'About' },
+  { href: '/explore', label: 'Explore' }
 ] as const;
 
 const authLinks = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/workspace', label: 'Workspace' },
+  { href: '/assistant', label: 'Assistant' },
   { href: '/history', label: 'History' },
   { href: '/analytics', label: 'Analytics' },
+  { href: '/templates/manage', label: 'Templates' },
+  { href: '/collections', label: 'Collections' },
+  { href: '/profile', label: 'Profile' },
 ] as const;
 
 export function MobileNav({ isOpen, onClose }: MobileNavProps) {

@@ -2,7 +2,17 @@ import { ObjectId } from 'mongodb';
 import { getDb } from '../config/db';
 import { reviewCollection, Review } from '../models/review.model';
 import { templateCollection } from '../models/template.model';
+import { userCollection } from '../models/user.model';
 import { mapDoc, mapDocs } from '../utils/mapDoc';
+
+async function attachUserName(doc: any): Promise<any> {
+  if (!doc || !doc.userId) return doc;
+  const user = await getDb().collection(userCollection).findOne(
+    { _id: new ObjectId(doc.userId) },
+    { projection: { name: 1 } }
+  );
+  return { ...doc, userName: user?.name || 'Anonymous' };
+}
 
 export async function create(templateId: string, userId: string, data: { rating: number; comment: string }): Promise<Review> {
   const db = getDb();
@@ -28,13 +38,15 @@ export async function create(templateId: string, userId: string, data: { rating:
     );
   }
 
-  return mapDoc<Review>({ ...doc, _id: result.insertedId })!;
+  const withName = await attachUserName({ ...doc, _id: result.insertedId });
+  return mapDoc<Review>(withName)!;
 }
 
 export async function findAllByTemplate(templateId: string) {
   const db = getDb();
   const docs = await db.collection(reviewCollection).find({ templateId }).sort({ createdAt: -1 }).toArray();
-  return mapDocs<Review>(docs);
+  const withNames = await Promise.all(docs.map(attachUserName));
+  return mapDocs<Review>(withNames);
 }
 
 export async function update(id: string, userId: string, data: Partial<Review>): Promise<Review | null> {

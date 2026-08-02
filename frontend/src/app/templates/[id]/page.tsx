@@ -47,6 +47,8 @@ export default function TemplateDetailPage() {
   const [relatedTemplates, setRelatedTemplates] = useState<Template[]>([]);
   const [relatedLoading, setRelatedLoading] = useState(true);
 
+  const hasReviewed = reviews.some((review) => review.userId === user?.id);
+
   useEffect(() => {
     async function load() {
       try {
@@ -296,7 +298,13 @@ export default function TemplateDetailPage() {
           </div>
         )}
 
-        {user && (
+        {user && hasReviewed && (
+          <div className="border-t border-slate-100 pt-4">
+            <p className="text-sm text-slate-500">You have already reviewed this template.</p>
+          </div>
+        )}
+
+        {user && !hasReviewed && (
           <div className="border-t border-slate-100 pt-4">
             <h3 className="mb-3 text-sm font-semibold text-slate-900">Write a Review</h3>
             <div className="space-y-3">

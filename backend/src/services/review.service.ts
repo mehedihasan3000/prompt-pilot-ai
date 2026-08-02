@@ -8,7 +8,7 @@ import { mapDoc, mapDocs } from '../utils/mapDoc';
 async function attachUserName(doc: any): Promise<any> {
   if (!doc || !doc.userId) return doc;
   const user = await getDb().collection(userCollection).findOne(
-    { _id: new ObjectId(doc.userId) },
+    { _id: new ObjectId(String(doc.userId)) },
     { projection: { name: 1 } }
   );
   return { ...doc, userName: user?.name || 'Anonymous' };
@@ -16,6 +16,13 @@ async function attachUserName(doc: any): Promise<any> {
 
 export async function create(templateId: string, userId: string, data: { rating: number; comment: string }): Promise<Review> {
   const db = getDb();
+  const existing = await db.collection(reviewCollection).findOne({ templateId, userId });
+  if (existing) {
+    const err: Error & { statusCode?: number } = new Error('You have already reviewed this template');
+    err.statusCode = 409;
+    throw err;
+  }
+
   const now = new Date();
   const doc: Review = {
     templateId,
@@ -24,7 +31,18 @@ export async function create(templateId: string, userId: string, data: { rating:
     comment: data.comment,
     createdAt: now,
   };
-  const result = await db.collection(reviewCollection).insertOne(doc);
+  let insertedId: any;
+  try {
+    const result = await db.collection(reviewCollection).insertOne(doc);
+    insertedId = result.insertedId;
+  } catch (error: any) {
+    if (error?.code === 11000) {
+      const err: Error & { statusCode?: number } = new Error('You have already reviewed this template');
+      err.statusCode = 409;
+      throw err;
+    }
+    throw error;
+  }
 
   const stats = await db.collection(reviewCollection).aggregate([
     { $match: { templateId } },
@@ -38,7 +56,7 @@ export async function create(templateId: string, userId: string, data: { rating:
     );
   }
 
-  const withName = await attachUserName({ ...doc, _id: result.insertedId });
+  const withName = await attachUserName({ ...doc, _id: insertedId });
   return mapDoc<Review>(withName)!;
 }
 

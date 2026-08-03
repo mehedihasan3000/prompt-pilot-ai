@@ -245,11 +245,11 @@ export default function TemplateDetailPage() {
             <Send className="h-4 w-4" />
             Use Template
           </Button>
-          <Button variant="secondary">
+          <Button variant="secondary" onClick={() => toast('This web app developer will implement this feature in September 1st week.', 'info')}>
             <Bookmark className="h-4 w-4" />
             Save to Collection
           </Button>
-          <Button variant="ghost">
+          <Button variant="ghost" onClick={() => toast('This web app developer will implement this feature in September 1st week.', 'info')}>
             <Heart className="h-4 w-4" />
             Add to Favorites
           </Button>
